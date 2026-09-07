@@ -205,12 +205,17 @@
   }
   .q-card.warn p{color:#e8846f;font-weight:700}
   .q-cta{margin-top:22px;display:flex;justify-content:center}
-  .q-cta .btn{width:auto;max-width:100%;justify-content:center;font-size:14px;padding:14px 18px 14px 26px}
+  .q-cta .btn{width:auto;max-width:100%;justify-content:center;white-space:nowrap;font-size:14px;padding:14px 18px 14px 26px}
   .q-cta .btn .plus{width:28px;height:28px;font-size:17px}
   @media(max-width:640px){
     .qualify{padding:56px 0 64px}
     .q-card{padding:22px 18px}
     .q-card p{font-size:15px}
+    .q-cta .btn{font-size:11px;letter-spacing:.02em;gap:9px;padding:12px 14px 12px 18px}
+    .q-cta .btn .plus{width:22px;height:22px;font-size:14px}
+  }
+  @media(max-width:360px){
+    .q-cta .btn{font-size:10px}
   }
   .hero .kicker{font-family:"Archivo",sans-serif;font-weight:800;font-size:clamp(1.1rem,2vw,1.45rem);text-transform:uppercase;color:#fff;letter-spacing:.01em}
   .hero .chip{margin-bottom:26px}
