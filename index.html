@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dr. Ubaydulloh — Stomatolog · Implantolog · Ortoped</title>
+<meta name="description" content="Dr. Ubaydulloh — implantatsiya, protezlash va estetik stomatologiya bo'yicha mutaxassis. Zamonaviy jihozlar, og'riqsiz davolash, uzoq muddatli kafolat." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  :root{
+    --bg:#f4efe6;
+    --paper:#fffdf8;
+    --ink:#1b2b28;
+    --muted:#5c6b66;
+    --pine:#1f4a43;
+    --pine-deep:#143430;
+    --coral:#dd6a4c;
+    --line:#d9d0c1;
+    --shadow:24px 40px 80px -40px rgba(20,52,48,.45);
+    --r:18px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Manrope",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:17px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  /* subtle paper grain */
+  body::before{
+    content:"";
+    position:fixed;inset:0;z-index:9999;pointer-events:none;
+    opacity:.035;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  img{max-width:100%;display:block}
+  a{color:inherit;text-decoration:none}
+  h1,h2,h3,h4{font-family:"Fraunces",Georgia,serif;font-weight:500;line-height:1.08;letter-spacing:-.01em}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+  .eyebrow{
+    font-family:"Manrope";font-size:12px;font-weight:600;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--pine);
+    display:flex;align-items:center;gap:12px;
+  }
+  .eyebrow::before{content:"";width:34px;height:1px;background:var(--pine);opacity:.5}
+
+  .btn{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:15px 26px;border-radius:999px;
+    font-weight:600;font-size:15px;letter-spacing:.01em;
+    transition:transform .25s ease, box-shadow .25s ease, background .25s ease;
+  }
+  .btn-solid{background:var(--pine);color:#fdfbf5;box-shadow:0 14px 30px -14px rgba(20,52,48,.7)}
+  .btn-solid:hover{transform:translateY(-2px);box-shadow:0 20px 40px -14px rgba(20,52,48,.8)}
+  .btn-ghost{border:1px solid var(--line);color:var(--ink)}
+  .btn-ghost:hover{border-color:var(--pine);color:var(--pine)}
+
+  /* ---------- header ---------- */
+  header{
+    position:sticky;top:0;z-index:100;
+    backdrop-filter:blur(10px);
+    background:rgba(244,239,230,.82);
+    border-bottom:1px solid transparent;
+    transition:border-color .3s ease, background .3s ease;
+  }
+  header.scrolled{border-color:var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:76px}
+  .brand{font-family:"Fraunces";font-size:21px;font-weight:600;letter-spacing:-.02em;display:flex;align-items:center;gap:10px}
+  .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--coral)}
+  .nav-links{display:flex;gap:34px;font-size:14.5px;font-weight:500;color:var(--muted)}
+  .nav-links a{position:relative;transition:color .2s}
+  .nav-links a:hover{color:var(--ink)}
+  .nav-links a::after{content:"";position:absolute;left:0;bottom:-6px;width:0;height:1.5px;background:var(--coral);transition:width .25s}
+  .nav-links a:hover::after{width:100%}
+  .nav-cta{display:flex;align-items:center;gap:18px}
+  .nav-phone{font-weight:600;font-size:14.5px;color:var(--ink)}
+  .burger{display:none;background:none;border:none;cursor:pointer;padding:8px}
+  .burger span{display:block;width:24px;height:2px;background:var(--ink);margin:5px 0;transition:.3s}
+
+  /* ---------- hero ---------- */
+  .hero{position:relative;padding:78px 0 92px;overflow:hidden}
+  .hero-arc{
+    position:absolute;right:-160px;top:-120px;width:620px;height:620px;border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, #2b5f57, #143430 70%);
+    filter:blur(0);opacity:.9;z-index:0;
+  }
+  .hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+  .hero h1{font-size:clamp(2.6rem,5.4vw,4.4rem);margin:22px 0 20px}
+  .hero h1 em{font-style:italic;color:var(--pine)}
+  .hero p.lead{font-size:19px;color:var(--muted);max-width:30em;margin-bottom:32px}
+  .hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:38px}
+  .hero-tags{display:flex;gap:10px;flex-wrap:wrap}
+  .tag{
+    font-size:13px;font-weight:600;letter-spacing:.03em;
+    padding:8px 15px;border-radius:999px;background:var(--paper);border:1px solid var(--line);color:var(--pine);
+  }
+
+  .portrait{
+    position:relative;
+    border-radius:280px 280px 26px 26px;
+    overflow:hidden;
+    aspect-ratio:4/5;
+    background:linear-gradient(160deg,#dfeae4,#c7d8d0);
+    box-shadow:var(--shadow);
+    border:1px solid rgba(255,255,255,.5);
+  }
+  .portrait .ph{
+    position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;
+    color:var(--pine-deep);
+  }
+  .portrait svg{width:78%;height:auto;opacity:.9}
+  .portrait .badge{
+    position:absolute;left:18px;bottom:18px;
+    background:rgba(255,253,248,.92);backdrop-filter:blur(4px);
+    padding:12px 16px;border-radius:14px;font-size:13px;line-height:1.4;
+    box-shadow:0 10px 24px -12px rgba(20,52,48,.5);
+  }
+  .portrait .badge b{font-family:"Fraunces";font-size:17px;display:block;font-weight:600}
+
+  /* ---------- marquee strip ---------- */
+  .strip{background:var(--pine-deep);color:#e7efe9;padding:18px 0;overflow:hidden;white-space:nowrap}
+  .strip .track{display:inline-flex;gap:52px;animation:slide 26s linear infinite;font-family:"Fraunces";font-size:18px;font-style:italic}
+  .strip .track span{opacity:.85}
+  .strip .track span::before{content:"✦";margin-right:52px;opacity:.4;font-style:normal}
+  @keyframes slide{to{transform:translateX(-50%)}}
+
+  /* ---------- section base ---------- */
+  section.block{padding:104px 0}
+  .sec-head{max-width:640px;margin-bottom:56px}
+  .sec-head h2{font-size:clamp(2rem,3.6vw,2.9rem);margin:18px 0 14px}
+  .sec-head p{color:var(--muted);font-size:18px}
+  .num{font-family:"Fraunces";font-style:italic;color:var(--coral);font-size:15px}
+
+  /* ---------- about ---------- */
+  .about-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:60px;align-items:start}
+  .about-photo{
+    border-radius:26px 26px 120px 26px;overflow:hidden;aspect-ratio:1/1.05;
+    background:linear-gradient(150deg,#d3e0d9,#b9ccc3);position:relative;box-shadow:var(--shadow);
+  }
+  .about-photo .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--pine-deep);opacity:.85}
+  .about-photo svg{width:60%}
+  .about-body h3{font-size:1.5rem;margin:26px 0 12px}
+  .about-body p{color:var(--muted);margin-bottom:16px}
+  .cred{display:grid;grid-template-columns:repeat(2,1fr);gap:26px;margin-top:32px;padding-top:32px;border-top:1px solid var(--line)}
+  .cred .n{font-family:"Fraunces";font-size:2.4rem;color:var(--pine);line-height:1}
+  .cred .l{font-size:14px;color:var(--muted);margin-top:6px}
+
+  /* ---------- services ---------- */
+  #xizmatlar{background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .card{
+    background:var(--bg);border:1px solid var(--line);border-radius:var(--r);
+    padding:32px 28px 30px;transition:transform .3s ease, box-shadow .3s ease, border-color .3s;
+    position:relative;overflow:hidden;
+  }
+  .card:hover{transform:translateY(-6px);box-shadow:var(--shadow);border-color:transparent}
+  .card .ic{width:46px;height:46px;border-radius:12px;background:var(--pine);color:#fdfbf5;display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+  .card .ic svg{width:24px;height:24px}
+  .card h3{font-size:1.28rem;margin-bottom:10px}
+  .card p{font-size:15px;color:var(--muted)}
+  .card .price{margin-top:18px;font-size:13.5px;font-weight:600;color:var(--pine);letter-spacing:.02em}
+
+  /* ---------- process ---------- */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;counter-reset:s}
+  .step{padding-top:28px;border-top:2px solid var(--ink);position:relative}
+  .step::before{counter-increment:s;content:"0" counter(s);font-family:"Fraunces";font-style:italic;font-size:1.5rem;color:var(--coral);position:absolute;top:16px;right:0}
+  .step h4{font-size:1.16rem;margin-bottom:8px}
+  .step p{font-size:14.5px;color:var(--muted)}
+
+  /* ---------- testimonials ---------- */
+  #fikrlar{background:var(--pine-deep);color:#eaf1ec}
+  #fikrlar .sec-head p{color:#a9c2b8}
+  #fikrlar .eyebrow{color:#8fb3a6}
+  #fikrlar .eyebrow::before{background:#8fb3a6}
+  .quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .quote{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:var(--r);padding:30px 26px}
+  .quote p{font-family:"Fraunces";font-style:italic;font-size:1.12rem;line-height:1.5;margin-bottom:20px}
+  .quote .who{font-size:14px;color:#a9c2b8;font-family:"Manrope"}
+  .stars{color:var(--coral);letter-spacing:3px;margin-bottom:16px;font-size:14px}
+
+  /* ---------- faq ---------- */
+  .faq-item{border-top:1px solid var(--line);padding:24px 0;cursor:pointer}
+  .faq-item:last-child{border-bottom:1px solid var(--line)}
+  .faq-q{display:flex;justify-content:space-between;align-items:center;gap:20px;font-family:"Fraunces";font-size:1.2rem}
+  .faq-q .pm{flex:none;width:26px;height:26px;border:1px solid var(--pine);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--pine);transition:transform .3s}
+  .faq-item.open .pm{transform:rotate(45deg)}
+  .faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease;color:var(--muted)}
+  .faq-a p{padding-top:14px;max-width:52em}
+
+  /* ---------- contact ---------- */
+  #aloqa{background:var(--paper);border-top:1px solid var(--line)}
+  .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+  .info-row{display:flex;gap:16px;padding:22px 0;border-bottom:1px solid var(--line)}
+  .info-row:first-child{border-top:1px solid var(--line)}
+  .info-row .k{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--pine);min-width:130px;font-weight:600}
+  .info-row .v{font-size:16px}
+  .info-row .v a:hover{color:var(--coral)}
+  form{background:var(--bg);border:1px solid var(--line);border-radius:var(--r);padding:32px}
+  .field{margin-bottom:18px}
+  .field label{display:block;font-size:13px;font-weight:600;letter-spacing:.04em;margin-bottom:7px;color:var(--muted)}
+  .field input,.field textarea{
+    width:100%;padding:13px 15px;border:1px solid var(--line);border-radius:11px;
+    background:var(--paper);font-family:inherit;font-size:15px;color:var(--ink);transition:border-color .2s;
+  }
+  .field input:focus,.field textarea:focus{outline:none;border-color:var(--pine)}
+  form button{width:100%;justify-content:center;border:none;cursor:pointer;margin-top:6px}
+  .form-note{font-size:12.5px;color:var(--muted);margin-top:14px;text-align:center}
+  .form-ok{display:none;padding:14px;border-radius:11px;background:rgba(31,74,67,.1);color:var(--pine);font-size:14px;font-weight:600;text-align:center;margin-top:14px}
+
+  /* ---------- footer ---------- */
+  footer{background:var(--pine-deep);color:#cdddd4;padding:60px 0 34px}
+  .foot-top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:28px;padding-bottom:34px;border-bottom:1px solid rgba(255,255,255,.12)}
+  .foot-brand{font-family:"Fraunces";font-size:22px;color:#fff}
+  .foot-links{display:flex;gap:26px;font-size:14px;flex-wrap:wrap}
+  .foot-links a:hover{color:#fff}
+  .foot-bottom{padding-top:22px;font-size:13px;color:#8fa89e;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+
+  /* ---------- reveal ---------- */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease, transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+
+  /* ---------- responsive ---------- */
+  @media(max-width:960px){
+    .hero-grid,.about-grid,.contact-grid{grid-template-columns:1fr;gap:40px}
+    .cards,.quotes{grid-template-columns:1fr 1fr}
+    .steps{grid-template-columns:1fr 1fr}
+    .hero-arc{width:420px;height:420px;right:-140px;top:-100px}
+    .portrait{max-width:420px}
+  }
+  @media(max-width:620px){
+    body{font-size:16px}
+    .nav-links,.nav-phone{display:none}
+    .burger{display:block}
+    .nav-links.open{
+      display:flex;flex-direction:column;position:absolute;top:76px;left:0;right:0;
+      background:var(--bg);border-bottom:1px solid var(--line);padding:22px 28px;gap:20px;
+    }
+    section.block{padding:72px 0}
+    .cards,.quotes,.steps{grid-template-columns:1fr}
+    .cred{grid-template-columns:1fr}
+    .hero{padding:48px 0 64px}
+  }
+</style>
+</head>
+<body>
+
+<header id="top">
+  <div class="wrap nav">
+    <a href="#top" class="brand"><span class="dot"></span> Dr. Ubaydulloh</a>
+    <nav class="nav-links" id="menu">
+      <a href="#tajriba">Men haqimda</a>
+      <a href="#xizmatlar">Xizmatlar</a>
+      <a href="#jarayon">Jarayon</a>
+      <a href="#fikrlar">Fikrlar</a>
+      <a href="#aloqa">Aloqa</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="tel:+998000000000" class="nav-phone">+998 00 000 00 00</a>
+      <a href="#aloqa" class="btn btn-solid">Qabulga yozilish</a>
+      <button class="burger" id="burger" aria-label="Menyu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-arc" aria-hidden="true"></div>
+  <div class="wrap hero-grid">
+    <div class="hero-text reveal">
+      <div class="eyebrow">Stomatolog · Implantolog · Ortoped</div>
+      <h1>Sog'lom tabassum — <em>ishonchli</em> qo'llarda.</h1>
+      <p class="lead">Men Dr. Ubaydulloh. Tish implantatsiyasi, protezlash va estetik stomatologiya bilan shug'ullanaman. Har bir bemorga aniq reja, og'riqsiz davolash va uzoq muddatli natija.</p>
+      <div class="hero-actions">
+        <a href="#aloqa" class="btn btn-solid">Bepul konsultatsiya →</a>
+        <a href="#xizmatlar" class="btn btn-ghost">Xizmatlarni ko'rish</a>
+      </div>
+      <div class="hero-tags">
+        <span class="tag">Implantatsiya</span>
+        <span class="tag">Sirkoniy protez</span>
+        <span class="tag">Estetik plombalar</span>
+        <span class="tag">3D diagnostika</span>
+      </div>
+    </div>
+    <div class="portrait reveal" aria-label="Shifokor surati uchun joy">
+      <div class="ph" aria-hidden="true">
+        <svg viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="100" cy="78" r="42" fill="currentColor" opacity="0.25"/>
+          <path d="M28 240c0-46 32-78 72-78s72 32 72 78" fill="currentColor" opacity="0.25"/>
+        </svg>
+      </div>
+      <div class="badge"><b>10+ yil</b> amaliy tajriba</div>
+    </div>
+  </div>
+</section>
+
+<div class="strip" aria-hidden="true">
+  <div class="track">
+    <span>Og'riqsiz davolash</span><span>Zamonaviy jihozlar</span><span>Steril muhit</span>
+    <span>Uzoq muddatli kafolat</span><span>Individual yondashuv</span>
+    <span>Og'riqsiz davolash</span><span>Zamonaviy jihozlar</span><span>Steril muhit</span>
+    <span>Uzoq muddatli kafolat</span><span>Individual yondashuv</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="block" id="tajriba">
+  <div class="wrap about-grid">
+    <div class="about-photo reveal" aria-label="Shifokor surati uchun joy">
+      <div class="ph" aria-hidden="true">
+        <svg viewBox="0 0 200 200" fill="none"><circle cx="100" cy="72" r="38" fill="currentColor" opacity="0.25"/><path d="M34 200c0-40 30-66 66-66s66 26 66 66" fill="currentColor" opacity="0.25"/></svg>
+      </div>
+    </div>
+    <div class="about-body reveal">
+      <div class="eyebrow"><span class="num">01</span> Men haqimda</div>
+      <h3>Har bir holatga — o'ylangan yechim</h3>
+      <p>Stomatologiya sohasida 10 yildan ortiq faoliyat yuritaman. Asosiy yo'nalishim — tish implantatsiyasi va ortopedik stomatologiya (protezlash). Murakkab holatlarni ham bosqichma-bosqich, bemor uchun qulay tarzda hal qilaman.</p>
+      <p>Ishimda faqat sertifikatlangan materiallardan foydalanaman, davolashdan oldin 3D tasvir va aniq reja tuzaman. Maqsadim — vaqtinchalik emas, yillar davomida xizmat qiladigan natija.</p>
+      <div class="cred">
+        <div><div class="n">10+</div><div class="l">yillik amaliyot</div></div>
+        <div><div class="n">4000+</div><div class="l">muvaffaqiyatli davolash</div></div>
+        <div><div class="n">1200+</div><div class="l">o'rnatilgan implant</div></div>
+        <div><div class="n">5 yil</div><div class="l">ishlarga kafolat</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="block" id="xizmatlar">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow"><span class="num">02</span> Xizmatlar</div>
+      <h2>Bir joyda — to'liq stomatologik yordam</h2>
+      <p>Diagnostikadan tortib protezlashgacha bo'lgan barcha bosqichlar bitta shifokor nazoratida.</p>
+    </div>
+    <div class="cards">
+      <div class="card reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3c4 0 6 3 6 7 0 5-2 11-4 11-1 0-1-3-2-3s-1 3-2 3c-2 0-4-6-4-11 0-4 2-7 6-7Z"/></svg></div>
+        <h3>Tish implantatsiyasi</h3>
+        <p>Yo'qolgan tishlarni tabiiy ko'rinishdagi implant bilan tiklash. Bir bosqichli va klassik usullar.</p>
+        <div class="price">Konsultatsiya — bepul</div>
+      </div>
+      <div class="card reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 8h16M7 8v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V8M9 4h6"/></svg></div>
+        <h3>Protezlash (ortopediya)</h3>
+        <p>Sirkoniy va keramika qoplamalar, ko'prik va protezlar. Chaynash funksiyasi va estetikani tiklash.</p>
+        <div class="price">Individual reja bo'yicha</div>
+      </div>
+      <div class="card reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v18M5 8l14 8M19 8 5 16"/></svg></div>
+        <h3>Estetik stomatologiya</h3>
+        <p>Tabassumni oqartirish, kompozit qoplama va vinirlar orqali shakl va rangni tabiiy holga keltirish.</p>
+        <div class="price">Boshlang'ich ko'rikdan so'ng</div>
+      </div>
+      <div class="card reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M8 12h8"/></svg></div>
+        <h3>Terapevtik davolash</h3>
+        <p>Kariyes, pulpit va kanal davolash mikroskop nazoratida — tishni maksimal saqlab qolish.</p>
+        <div class="price">Narx hajmiga qarab</div>
+      </div>
+      <div class="card reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 3v7a6 6 0 0 0 12 0V3M9 21h6M12 16v5"/></svg></div>
+        <h3>Jarrohlik</h3>
+        <p>Murakkab tishlarni og'riqsiz olib tashlash, suyak qo'shish (sinus-lifting) va yumshoq to'qima plastikasi.</p>
+        <div class="price">Rejalashtirilgan qabul</div>
+      </div>
+      <div class="card reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 11c0 5.5-7 10-7 10Z"/></svg></div>
+        <h3>Profilaktika va gigiena</h3>
+        <p>Professional tozalash, tosh olib tashlash va yiliga 2 marta nazorat ko'rigi.</p>
+        <div class="price">Doimiy bemorlarga chegirma</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="block" id="jarayon">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow"><span class="num">03</span> Qanday ishlaymiz</div>
+      <h2>To'rt bosqichli aniq yo'l</h2>
+      <p>Birinchi qo'ng'iroqdan yakuniy natijagacha — har bir qadam tushunarli.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal"><h4>Konsultatsiya</h4><p>Ko'rik, 3D tasvir va shikoyatlarni muhokama qilish. Bepul.</p></div>
+      <div class="step reveal"><h4>Davolash rejasi</h4><p>Bosqichlar, muddat va aniq narx yozma ko'rinishda taqdim etiladi.</p></div>
+      <div class="step reveal"><h4>Davolash</h4><p>Og'riqsiz, steril sharoitda. Har bir bosqichda holat nazorat qilinadi.</p></div>
+      <div class="step reveal"><h4>Nazorat va kafolat</h4><p>Davolashdan keyingi ko'riklar va ishlarga rasmiy kafolat.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="block" id="fikrlar">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow"><span class="num">04</span> Bemorlar fikri</div>
+      <h2>Ular ishonch bildirgan</h2>
+      <p>Namunaviy sharhlar — keyinchalik haqiqiy bemor izohlari bilan almashtiriladi.</p>
+    </div>
+    <div class="quotes">
+      <div class="quote reveal">
+        <div class="stars">★★★★★</div>
+        <p>“Implant o'rnatishdan qo'rqardim, lekin butun jarayon og'riqsiz o'tdi. Hammasi oldindan tushuntirildi.”</p>
+        <div class="who">— Nodira A., Toshkent</div>
+      </div>
+      <div class="quote reveal">
+        <div class="stars">★★★★★</div>
+        <p>“Ikki tishimga sirkoniy qoplama qo'ydirdim. Tabiiy tishlardan farqi yo'q, rangi ham mos.”</p>
+        <div class="who">— Jasur R.</div>
+      </div>
+      <div class="quote reveal">
+        <div class="stars">★★★★★</div>
+        <p>“Bolamni birinchi marta shifokordan yig'lamasdan olib chiqdim. Munosabati juda yaxshi.”</p>
+        <div class="who">— Malika S.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="block" id="savol">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow"><span class="num">05</span> Ko'p so'raladigan savollar</div>
+      <h2>Aniqlik kiritamiz</h2>
+    </div>
+    <div class="reveal">
+      <div class="faq-item"><div class="faq-q"><span>Konsultatsiya pullikmi?</span><span class="pm">+</span></div><div class="faq-a"><p>Yo'q. Birinchi ko'rik va davolash rejasini tuzish bepul. Faqat qo'shimcha tekshiruvlar (masalan, KT tasviri) alohida hisoblanadi.</p></div></div>
+      <div class="faq-item"><div class="faq-q"><span>Implant o'rnatish og'riqlimi?</span><span class="pm">+</span></div><div class="faq-a"><p>Jarayon zamonaviy og'riqsizlantirish ostida o'tkaziladi. Ko'pchilik bemorlar davolashdan keyin oddiy tish olgandan ko'ra yengilroq his qilishini aytadi.</p></div></div>
+      <div class="faq-item"><div class="faq-q"><span>To'lovni bo'lib to'lash mumkinmi?</span><span class="pm">+</span></div><div class="faq-a"><p>Ha, katta hajmli davolash uchun bosqichma-bosqich to'lov imkoniyati bor. Tafsilotlar konsultatsiyada kelishiladi.</p></div></div>
+      <div class="faq-item"><div class="faq-q"><span>Ishlarga kafolat beriladimi?</span><span class="pm">+</span></div><div class="faq-a"><p>Ha. Implant va protez ishlariga rasmiy kafolat rasmiylashtiriladi, nazorat ko'riklari jadval asosida o'tkaziladi.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="block" id="aloqa">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow"><span class="num">06</span> Aloqa</div>
+      <h2>Qabulga yozilish</h2>
+      <p>Formani to'ldiring yoki to'g'ridan-to'g'ri qo'ng'iroq qiling — 15 daqiqa ichida bog'lanamiz.</p>
+    </div>
+    <div class="contact-grid">
+      <div class="reveal">
+        <div class="info-row"><div class="k">Telefon</div><div class="v"><a href="tel:+998000000000">+998 00 000 00 00</a></div></div>
+        <div class="info-row"><div class="k">Telegram</div><div class="v"><a href="https://t.me/username">@username</a></div></div>
+        <div class="info-row"><div class="k">Manzil</div><div class="v">Toshkent sh., [ko'cha nomi], [uy]</div></div>
+        <div class="info-row"><div class="k">Ish vaqti</div><div class="v">Dush–Shan: 09:00–19:00 · Yakshanba: dam</div></div>
+      </div>
+      <form id="bookForm" novalidate>
+        <div class="field"><label for="nm">Ism</label><input id="nm" name="nm" type="text" placeholder="Ismingiz" required /></div>
+        <div class="field"><label for="ph">Telefon raqam</label><input id="ph" name="ph" type="tel" placeholder="+998 __ ___ __ __" required /></div>
+        <div class="field"><label for="ms">Qisqacha (ixtiyoriy)</label><textarea id="ms" name="ms" rows="3" placeholder="Qanday xizmat qiziqtiradi?"></textarea></div>
+        <button type="submit" class="btn btn-solid">So'rov yuborish</button>
+        <div class="form-ok" id="formOk">Rahmat! So'rovingiz qabul qilindi — tez orada bog'lanamiz.</div>
+        <div class="form-note">Yuborish orqali siz bilan bog'lanishimizga rozilik bildirasiz.</div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">Dr. Ubaydulloh</div>
+      <div class="foot-links">
+        <a href="#tajriba">Men haqimda</a>
+        <a href="#xizmatlar">Xizmatlar</a>
+        <a href="#jarayon">Jarayon</a>
+        <a href="#aloqa">Aloqa</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span id="yr"></span> Dr. Ubaydulloh. Barcha huquqlar himoyalangan.</span>
+      <span>Stomatolog · Implantolog · Ortoped</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // year
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  // header shadow on scroll
+  const hdr = document.querySelector('header');
+  addEventListener('scroll', () => hdr.classList.toggle('scrolled', scrollY > 10));
+
+  // mobile menu
+  const burger = document.getElementById('burger');
+  const menu = document.getElementById('menu');
+  burger.addEventListener('click', () => menu.classList.toggle('open'));
+  menu.addEventListener('click', e => { if (e.target.tagName === 'A') menu.classList.remove('open'); });
+
+  // reveal on scroll
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach((el, i) => {
+    el.style.transitionDelay = (i % 3) * 0.08 + 's';
+    io.observe(el);
+  });
+
+  // faq
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const open = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => { i.classList.remove('open'); i.querySelector('.faq-a').style.maxHeight = null; });
+      if (!open) { item.classList.add('open'); const a = item.querySelector('.faq-a'); a.style.maxHeight = a.scrollHeight + 'px'; }
+    });
+  });
+
+  // form (frontend only for now)
+  const form = document.getElementById('bookForm');
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    if (!form.nm.value.trim() || !form.ph.value.trim()) { form.reportValidity(); return; }
+    document.getElementById('formOk').style.display = 'block';
+    form.reset();
+  });
+</script>
+</body>
+</html>
