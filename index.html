@@ -424,8 +424,8 @@
   </div>
 </section>
 
-<!-- BU SIZ UCHUN, AGAR -->
-<section class="qualify">
+<!-- BU SIZ UCHUN, AGAR (video 10:28 da ochiladi) -->
+<section class="qualify" id="qualify" hidden>
   <div class="wrap">
     <h2 class="q-title reveal">Bu video <span class="b">aynan siz uchun</span>, agar:</h2>
     <div class="q-list">
@@ -461,7 +461,8 @@
   }, { threshold: 0.12 });
   reveals.forEach((el, i) => { el.style.transitionDelay = (i % 3) * 0.09 + 's'; io.observe(el); });
   // Zaxira: agar kuzatuvchi ishlamasa, 700 ms dan keyin baribir ko'rsatiladi
-  setTimeout(() => reveals.forEach(el => el.classList.add('in')), 700);
+  // (yashirin #qualify blokidagilar bundan mustasno — ular video 10:28 da ochiladi)
+  setTimeout(() => reveals.forEach(el => { if (!el.closest('#qualify')) el.classList.add('in'); }), 700);
 
   // Ogohlantirish matnini bitta qatorda box ichiga sig'dirish
   (function () {
@@ -481,19 +482,65 @@
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
   })();
 
-  // Video: bosilганда YouTube pleer yuklanadi
+  // Video: bosilганда YouTube pleer yuklanadi, 10:28 da "qualify" bloki ochiladi
   (function () {
     const frame = document.getElementById('videoFrame');
     const ph = document.getElementById('videoPh');
+    const qualify = document.getElementById('qualify');
     if (!frame || !ph) return;
+
+    const REVEAL_AT = 628; // 10:28 (soniya)
+
+    function revealQualify() {
+      if (!qualify || !qualify.hidden) return;
+      qualify.hidden = false;
+      requestAnimationFrame(() => {
+        qualify.querySelectorAll('.reveal').forEach(el => {
+          if (el.getBoundingClientRect().top < innerHeight) el.classList.add('in');
+        });
+      });
+    }
+
+    let apiReq = false;
+    function loadAPI(cb) {
+      if (window.YT && window.YT.Player) return cb();
+      const prev = window.onYouTubeIframeAPIReady;
+      window.onYouTubeIframeAPIReady = () => { prev && prev(); cb(); };
+      if (apiReq) return;
+      apiReq = true;
+      const s = document.createElement('script');
+      s.src = 'https://www.youtube.com/iframe_api';
+      document.head.appendChild(s);
+    }
+
+    let watch = null;
+    function startWatch(player) {
+      if (watch) return;
+      watch = setInterval(() => {
+        let t = 0;
+        try { t = player.getCurrentTime() || 0; } catch (e) {}
+        if (t >= REVEAL_AT) { revealQualify(); clearInterval(watch); }
+      }, 1000);
+    }
+
     ph.addEventListener('click', () => {
-      const f = document.createElement('iframe');
-      f.src = 'https://www.youtube-nocookie.com/embed/' + frame.dataset.yt + '?autoplay=1&rel=0&modestbranding=1&playsinline=1';
-      f.title = 'Video';
-      f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
-      f.allowFullscreen = true;
-      frame.appendChild(f);
       ph.remove();
+      const holder = document.createElement('div');
+      frame.appendChild(holder);
+      loadAPI(() => {
+        new YT.Player(holder, {
+          videoId: frame.dataset.yt,
+          host: 'https://www.youtube-nocookie.com',
+          playerVars: { autoplay: 1, rel: 0, modestbranding: 1, playsinline: 1 },
+          events: {
+            onReady: e => e.target.playVideo(),
+            onStateChange: e => {
+              if (e.data === YT.PlayerState.PLAYING) startWatch(e.target);
+              if (e.data === YT.PlayerState.ENDED) revealQualify();
+            }
+          }
+        });
+      });
     });
   })();
 </script>
