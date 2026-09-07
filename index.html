@@ -168,14 +168,17 @@
   .video-frame iframe,.video-frame video{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
   .video-ph{
     position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
-    color:#9fb2d4;font-family:"Archivo",sans-serif;font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;
-    background:radial-gradient(circle at 50% 45%, rgba(63,140,255,.12), rgba(5,7,14,0) 60%);
+    color:#cdd9ef;font-family:"Archivo",sans-serif;font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;
+    background:radial-gradient(circle at 50% 45%, rgba(63,140,255,.14), rgba(5,7,14,.5) 62%);
+    border:0;cursor:pointer;width:100%;transition:opacity .25s;
   }
+  .video-ph.hide{opacity:0;pointer-events:none}
   .video-ph .play{
     width:66px;height:66px;border-radius:50%;display:flex;align-items:center;justify-content:center;
     background:linear-gradient(135deg,var(--blue-2),var(--blue-deep));
-    box-shadow:0 0 40px -6px var(--glow);
+    box-shadow:0 0 40px -6px var(--glow);transition:transform .2s;
   }
+  .video-ph:hover .play{transform:scale(1.06)}
   .video-ph .play svg{width:24px;height:24px;fill:#fff;margin-left:3px}
   .hero .kicker{font-family:"Archivo",sans-serif;font-weight:800;font-size:clamp(1.1rem,2vw,1.45rem);text-transform:uppercase;color:#fff;letter-spacing:.01em}
   .hero .chip{margin-bottom:26px}
@@ -380,13 +383,13 @@
 
     <div class="video-wrap reveal">
       <div class="video-frame">
-        <!-- VIDEO: YouTube'ga yuklab, ID'ni almashtiring -> src="https://www.youtube-nocookie.com/embed/VIDEO_ID" -->
-        <iframe id="heroVideo" src="" data-src="" title="Video" loading="lazy"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-        <div class="video-ph" id="videoPh">
+        <video id="heroVideo" controls playsinline preload="metadata">
+          <source src="video/Youtube%203R.mp4" type="video/mp4" />
+        </video>
+        <button class="video-ph" id="videoPh" type="button" aria-label="Videoni ochish">
           <span class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
-          Video shu yerga joylanadi
-        </div>
+          Videoni ko'rish
+        </button>
       </div>
     </div>
   </div>
@@ -413,6 +416,16 @@
     fit();
     addEventListener('resize', fit);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+  })();
+
+  // Video: play tugmasi
+  (function () {
+    const v = document.getElementById('heroVideo');
+    const ph = document.getElementById('videoPh');
+    if (!v || !ph) return;
+    ph.addEventListener('click', () => { ph.classList.add('hide'); v.play(); });
+    v.addEventListener('play', () => ph.classList.add('hide'));
+    v.addEventListener('pause', () => { if (v.currentTime === 0) ph.classList.remove('hide'); });
   })();
 </script>
 </body>
