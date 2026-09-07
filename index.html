@@ -48,21 +48,21 @@
   }
 
   .warnbar{
-    display:flex;align-items:center;justify-content:center;text-align:center;
-    max-width:100%;
-    padding:11px 18px;border-radius:20px;
+    display:flex;align-items:center;justify-content:center;
+    width:100%;overflow:hidden;
+    padding:13px 22px;border-radius:999px;
     border:1px solid rgba(99,164,255,.5);
     background:rgba(99,164,255,.06);
     color:var(--blue-2);
-    font-family:"Archivo",sans-serif;font-weight:700;
-    font-size:11.5px;letter-spacing:.03em;line-height:1.4;text-transform:uppercase;
     box-shadow:0 0 34px -8px rgba(99,164,255,.3), inset 0 0 22px -10px rgba(99,164,255,.4);
     animation:warnpulse 2.6s ease-in-out infinite;
   }
-  /* Katta ekranda 1 qator, dumaloq pill */
-  @media(min-width:721px){
-    .warnbar{display:inline-flex;white-space:nowrap;border-radius:999px;padding:13px 30px;letter-spacing:.12em}
+  .warnbar span{
+    display:inline-block;white-space:nowrap;transform-origin:center;
+    font-family:"Archivo",sans-serif;font-weight:700;
+    font-size:clamp(7px,2.1vw,14px);letter-spacing:.06em;text-transform:uppercase;
   }
+  @media(min-width:721px){ .warnbar span{letter-spacing:.12em} }
   @keyframes warnpulse{
     0%,100%{border-color:rgba(99,164,255,.4);box-shadow:0 0 28px -10px rgba(99,164,255,.22), inset 0 0 22px -12px rgba(99,164,255,.35)}
     50%{border-color:rgba(99,164,255,.85);box-shadow:0 0 46px -6px rgba(99,164,255,.42), inset 0 0 24px -8px rgba(99,164,255,.5)}
@@ -351,7 +351,7 @@
 <section class="hero">
   <div class="wrap hero-grid">
     <div class="hero-text reveal">
-      <div class="warnbar">Agar tishlaringiz qolmagan bo'lsa, videoni oxirigacha ko'ring!</div>
+      <div class="warnbar"><span>Agar tishlaringiz qolmagan bo'lsa, videoni oxirigacha ko'ring!</span></div>
       <h1>1 hafta ichida tabassumingizni <span class="b">qayta tiklayman!</span></h1>
       <p class="lead">1 kun ichida hech qanday og'riqsiz 12 tagacha implant o'rnatib, 1 hafta ichida vaqtinchalik tishlarni taqib, uyatchan tabassumingizni yana go'zal ko'rinishga keltiraman.</p>
       <p class="kicker">Yoki pulingizni qaytaraman!</p>
@@ -402,6 +402,24 @@
     es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
   }, { threshold: 0.12 });
   document.querySelectorAll('.reveal').forEach((el, i) => { el.style.transitionDelay = (i % 3) * 0.09 + 's'; io.observe(el); });
+
+  // Ogohlantirish matnini bitta qatorda box ichiga sig'dirish
+  (function () {
+    const box = document.querySelector('.warnbar');
+    const txt = box && box.firstElementChild;
+    if (!txt) return;
+    function fit() {
+      txt.style.transform = 'scale(1)';
+      const avail = box.clientWidth - 30;          // ichki padding hisobga olinadi
+      const w = txt.scrollWidth;
+      const s = w > 0 ? Math.min(1, avail / w) : 1;
+      txt.style.transform = 'scale(' + s.toFixed(3) + ')';
+      box.style.height = Math.ceil(txt.getBoundingClientRect().height) + 26 + 'px';
+    }
+    fit();
+    addEventListener('resize', fit);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+  })();
 </script>
 </body>
 </html>
