@@ -48,19 +48,19 @@
   }
 
   .warnbar{
-    display:inline-flex;align-items:center;text-align:center;
-    padding:16px 34px;border-radius:999px;
-    border:1px solid rgba(214,92,74,.55);
-    background:rgba(214,92,74,.06);
-    color:#e0705f;
+    display:inline-flex;align-items:center;white-space:nowrap;max-width:100%;
+    padding:clamp(9px,2.4vw,12px) clamp(14px,4vw,26px);border-radius:999px;
+    border:1px solid rgba(99,164,255,.5);
+    background:rgba(99,164,255,.06);
+    color:var(--blue-2);
     font-family:"Archivo",sans-serif;font-weight:700;
-    font-size:clamp(12px,1.25vw,15px);letter-spacing:.16em;line-height:1.5;text-transform:uppercase;
-    box-shadow:0 0 40px -6px rgba(214,92,74,.28), inset 0 0 24px -10px rgba(214,92,74,.4);
+    font-size:clamp(7.5px,2vw,12.5px);letter-spacing:clamp(.03em,.7vw,.1em);text-transform:uppercase;
+    box-shadow:0 0 34px -8px rgba(99,164,255,.3), inset 0 0 22px -10px rgba(99,164,255,.4);
     animation:warnpulse 2.6s ease-in-out infinite;
   }
   @keyframes warnpulse{
-    0%,100%{border-color:rgba(214,92,74,.45);box-shadow:0 0 32px -8px rgba(214,92,74,.22), inset 0 0 24px -12px rgba(214,92,74,.35)}
-    50%{border-color:rgba(214,92,74,.85);box-shadow:0 0 52px -4px rgba(214,92,74,.4), inset 0 0 26px -8px rgba(214,92,74,.5)}
+    0%,100%{border-color:rgba(99,164,255,.4);box-shadow:0 0 28px -10px rgba(99,164,255,.22), inset 0 0 22px -12px rgba(99,164,255,.35)}
+    50%{border-color:rgba(99,164,255,.85);box-shadow:0 0 46px -6px rgba(99,164,255,.42), inset 0 0 24px -8px rgba(99,164,255,.5)}
   }
 
   .btn{
@@ -146,7 +146,8 @@
   /* ---------------- hero ---------------- */
   .hero{position:relative;z-index:2;padding:70px 0 90px}
   .hero-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:40px;align-items:center}
-  .hero h1{font-size:clamp(2.9rem,6vw,5.1rem);font-weight:900;margin:22px 0 24px}
+  .hero-text,.hero-visual{min-width:0}
+  .hero h1{font-size:clamp(2rem,7.4vw,5.1rem);font-weight:900;margin:22px 0 24px;overflow-wrap:break-word}
   .hero h1 .b{color:var(--blue)}
   .hero .lead{color:var(--muted);font-size:18px;max-width:30em;margin-bottom:20px}
   .hero .kicker{font-family:"Archivo",sans-serif;font-weight:800;font-size:clamp(1.1rem,2vw,1.45rem);text-transform:uppercase;color:#fff;margin-bottom:30px;letter-spacing:.01em}
