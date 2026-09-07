@@ -178,6 +178,39 @@
   .video-ph .play{display:flex;align-items:center;justify-content:center;transition:transform .2s}
   .video-ph:hover .play{transform:scale(1.08)}
   .video-ph .play svg{width:58px;height:58px;fill:#fff;filter:drop-shadow(0 3px 14px rgba(0,0,0,.7))}
+
+  /* qualify / "bu siz uchun agar" */
+  .qualify{position:relative;z-index:2;padding:78px 0 88px}
+  .qualify .wrap{max-width:680px}
+  .q-title{
+    font-family:"Archivo",sans-serif;font-weight:900;text-transform:uppercase;text-align:center;
+    font-size:clamp(1.5rem,4.4vw,2.2rem);line-height:1.15;margin-bottom:34px;letter-spacing:-.01em;
+  }
+  .q-title .b{color:var(--blue)}
+  .q-list{display:flex;flex-direction:column;gap:14px}
+  .q-card{
+    background:var(--panel);border:1px solid var(--panel-brd);border-radius:16px;
+    padding:26px 24px;text-align:center;backdrop-filter:blur(10px);
+  }
+  .q-card .ck{
+    width:34px;height:34px;border-radius:50%;margin:0 auto 14px;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(52,190,120,.16);border:1px solid rgba(52,190,120,.5);
+  }
+  .q-card .ck svg{width:16px;height:16px;stroke:#3ecf7a;fill:none;stroke-width:2.6}
+  .q-card p{font-size:16px;line-height:1.55;color:#dbe4f4}
+  .q-card.warn{
+    border-color:rgba(224,112,95,.55);background:rgba(224,112,95,.07);
+    box-shadow:0 0 40px -10px rgba(224,112,95,.3), inset 0 0 26px -14px rgba(224,112,95,.4);
+  }
+  .q-card.warn p{color:#e8846f;font-weight:700}
+  .q-cta{margin-top:20px}
+  .q-cta .btn{width:100%;justify-content:center;font-size:15px}
+  @media(max-width:640px){
+    .qualify{padding:56px 0 64px}
+    .q-card{padding:22px 18px}
+    .q-card p{font-size:15px}
+  }
   .hero .kicker{font-family:"Archivo",sans-serif;font-weight:800;font-size:clamp(1.1rem,2vw,1.45rem);text-transform:uppercase;color:#fff;letter-spacing:.01em}
   .hero .chip{margin-bottom:26px}
   .hero-actions{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:34px}
@@ -387,6 +420,37 @@
           Videoni ko'rish
         </button>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- BU SIZ UCHUN, AGAR -->
+<section class="qualify">
+  <div class="wrap">
+    <h2 class="q-title reveal">Bu video <span class="b">aynan siz uchun</span>, agar:</h2>
+    <div class="q-list">
+      <div class="q-card reveal">
+        <span class="ck"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+        <p>Tishlaringizning ko'p qismi yo'q yoki umuman qolmagan bo'lsa</p>
+      </div>
+      <div class="q-card reveal">
+        <span class="ck"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+        <p>Olinadigan protez taqib yurib, undan charchagan bo'lsangiz</p>
+      </div>
+      <div class="q-card reveal">
+        <span class="ck"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+        <p>"Menga implant to'g'ri keladimi, suyagim yetadimi?" degan savol tinchlik bermasa</p>
+      </div>
+      <div class="q-card reveal">
+        <span class="ck"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+        <p>Muammoni "keyinroq" emas, bir marta va butunlay hal qilmoqchi bo'lsangiz</p>
+      </div>
+      <div class="q-card warn reveal">
+        <p>Har oyda cheklangan miqdordagi bemorni qabul qilaman — har biri bilan shaxsan o'zim ishlayman</p>
+      </div>
+    </div>
+    <div class="q-cta reveal">
+      <a href="#" class="btn">Konsultatsiyaga ro'yxatdan o'tish <span class="plus">+</span></a>
     </div>
   </div>
 </section>
