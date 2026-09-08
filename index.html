@@ -175,6 +175,8 @@
   /* iframe biroz balandroq + tepaga tekislangan — pastdagi tugmalar qatori kesiladi,
      progress bar ko'rinadi, qora tasma kerak emas */
   .video-frame iframe{position:absolute;top:0;left:0;width:100%;height:calc(100% + 50px);border:0;display:block}
+  /* progress bar ustidagi qatlam — sudrab/bosib o'tkazib bo'lmaydi (faqat ko'rsatkich) */
+  .video-frame .v-lock{position:absolute;left:0;right:0;bottom:0;height:40px;z-index:3}
 
   /* qualify / "bu siz uchun agar" */
   .qualify{position:relative;z-index:2;padding:78px 0 88px}
@@ -428,6 +430,7 @@
           src="https://player.mediadelivery.net/embed/747094/44f0ed06-98c4-46bd-b42b-d504f4ac81e6?autoplay=false&loop=false&muted=false&preload=true&responsive=true"
           allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;fullscreen;"
           allowfullscreen></iframe>
+        <div class="v-lock" aria-hidden="true"></div>
       </div>
     </div>
 
@@ -518,7 +521,16 @@
       try {
         const player = new playerjs.Player(ifr);
         player.on('ready', () => {
-          player.on('timeupdate', d => { if (d && d.seconds >= REVEAL_AT) fireOnce(); });
+          let maxT = 0;               // eng uzoq ko'rilgan nuqta — oldinga o'tkazib bo'lmaydi
+          player.on('timeupdate', d => {
+            const t = (d && d.seconds) || 0;
+            if (t > maxT + 1.3) { player.setCurrentTime(maxT); }
+            else { maxT = Math.max(maxT, t); }
+            if (t >= REVEAL_AT) fireOnce();
+          });
+          player.on('seeked', () => {
+            player.getCurrentTime(t => { if ((t || 0) > maxT + 1.3) player.setCurrentTime(maxT); });
+          });
           player.on('ended', fireOnce);
 
           let backup = false;
