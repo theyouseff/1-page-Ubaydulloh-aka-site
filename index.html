@@ -202,21 +202,29 @@
   .video-frame .v-full svg{width:19px;height:19px}
   @media(max-width:640px){ .video-frame .v-full{width:32px;height:32px;right:9px;bottom:11px} .video-frame .v-full svg{width:17px;height:17px} }
 
-  /* "kattalashtirilgan" rejim — o'z UI'miz bilan (iOS native timeline'siz, o'tkazib bo'lmaydi) */
-  .video-frame.fs{
-    position:fixed;inset:0;z-index:99999;
-    width:auto;height:auto;max-width:none;margin:0;
+  /* "kattalashtirilgan" rejim — qurilma ekraniga to'liq, qora chegarasiz */
+  .video-frame.fs,
+  .video-frame:fullscreen,
+  .video-frame:-webkit-full-screen{
+    width:100%;height:100%;max-width:none;margin:0;
     border:0;border-radius:0;background-color:#000;background-size:cover;aspect-ratio:auto;
   }
-  .video-frame.fs video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .video-frame.fs{position:fixed;inset:0;z-index:99999}
+  .video-frame.fs video,
+  .video-frame:fullscreen video,
+  .video-frame:-webkit-full-screen video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
   .video-frame .v-close{
     position:absolute;top:14px;right:14px;z-index:6;display:none;
     width:38px;height:38px;border:0;border-radius:50%;cursor:pointer;color:#fff;
     align-items:center;justify-content:center;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);
   }
   .video-frame .v-close svg{width:18px;height:18px}
-  .video-frame.fs .v-close{display:flex}
-  .video-frame.fs .v-full{display:none}
+  .video-frame.fs .v-close,
+  .video-frame:fullscreen .v-close,
+  .video-frame:-webkit-full-screen .v-close{display:flex}
+  .video-frame.fs .v-full,
+  .video-frame:fullscreen .v-full,
+  .video-frame:-webkit-full-screen .v-full{display:none}
   body.v-fs-lock{overflow:hidden}
 
   /* qualify / "bu siz uchun agar" */
@@ -586,16 +594,28 @@
     vid.addEventListener('play', () => frame.classList.add('playing'));
     vid.addEventListener('pause', () => frame.classList.remove('playing'));
 
-    // "Kattalashtirish" — o'z UI'miz bilan (iOS native scrubber'siz, o'tkazib bo'lmaydi)
+    // "Kattalashtirish" — qurilmaning BUTUN ekraniga (brauzer paneli ham yopiladi)
+    const fakeOn = () => { frame.classList.add('fs'); document.body.classList.add('v-fs-lock'); };
+    const fakeOff = () => { frame.classList.remove('fs'); document.body.classList.remove('v-fs-lock'); };
+    const realFS = () => document.fullscreenElement || document.webkitFullscreenElement;
     const enterFS = () => {
-      frame.classList.add('fs'); document.body.classList.add('v-fs-lock');
-      try { screen.orientation.lock('landscape'); } catch (e) {}   // Android — gorizontalga
+      if (frame.requestFullscreen)      { frame.requestFullscreen().catch(fakeOn); }
+      else if (frame.webkitRequestFullscreen) { frame.webkitRequestFullscreen(); }
+      else if (vid.webkitEnterFullscreen)     { vid.webkitEnterFullscreen(); }   // iOS Safari
+      else { fakeOn(); }
+      try { screen.orientation.lock('landscape'); } catch (e) {}
     };
-    const exitFS  = () => {
-      frame.classList.remove('fs'); document.body.classList.remove('v-fs-lock');
+    const exitFS = () => {
+      if (realFS()) { (document.exitFullscreen || document.webkitExitFullscreen).call(document); }
+      fakeOff();
       try { screen.orientation.unlock(); } catch (e) {}
     };
-    const toggleFS = () => frame.classList.contains('fs') ? exitFS() : enterFS();
+    const toggleFS = () => (realFS() || frame.classList.contains('fs')) ? exitFS() : enterFS();
+    document.addEventListener('fullscreenchange', () => {
+      const on = document.fullscreenElement === frame;
+      frame.classList.toggle('fs', on);
+      document.body.classList.toggle('v-fs-lock', on);
+    });
 
     vid.addEventListener('dblclick', toggleFS);     // kompyuter: 2 marta bosish
     let lastTap = 0;                                 // telefon: 2 marta tap
