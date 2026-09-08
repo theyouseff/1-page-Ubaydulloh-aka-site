@@ -168,23 +168,12 @@
   .video-wrap{width:100%;max-width:720px;margin:0 auto}
   .video-frame{
     position:relative;width:100%;aspect-ratio:16/9;
-    border-radius:18px;overflow:hidden;background:#05070e;
+    border-radius:18px;overflow:hidden;
+    background:#0a0f1c center/cover no-repeat url('https://i.ytimg.com/vi/q-_e2fvhKrI/maxresdefault.jpg');
     border:1px solid var(--panel-brd);
     box-shadow:0 0 60px -14px rgba(63,140,255,.4), 0 30px 70px -24px rgba(0,0,0,.7);
   }
   .video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
-  .video-ph{
-    position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
-    color:#eaf0fb;font-family:"Archivo",sans-serif;font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;
-    background-size:cover;background-position:center;
-    border:0;cursor:pointer;width:100%;transition:opacity .25s;
-  }
-  .video-ph.hide{opacity:0;pointer-events:none}
-  .video-ph:focus{outline:none}
-  .video-ph:focus-visible{outline:2px solid rgba(255,255,255,.6);outline-offset:6px;border-radius:12px}
-  .video-ph .play{display:flex;align-items:center;justify-content:center;transition:transform .2s}
-  .video-ph:hover .play{transform:scale(1.08)}
-  .video-ph .play svg{width:58px;height:58px;fill:#fff;filter:drop-shadow(0 3px 14px rgba(0,0,0,.7))}
 
   /* qualify / "bu siz uchun agar" */
   .qualify{position:relative;z-index:2;padding:78px 0 88px}
@@ -432,12 +421,12 @@
     </div>
 
     <div class="video-wrap reveal">
-      <div class="video-frame" id="videoFrame" data-lib="747094" data-vid="44f0ed06-98c4-46bd-b42b-d504f4ac81e6">
-        <button class="video-ph" id="videoPh" type="button" aria-label="Videoni ochish"
-          style="background-image:linear-gradient(rgba(5,7,14,.35),rgba(5,7,14,.6)),url('https://i.ytimg.com/vi/q-_e2fvhKrI/maxresdefault.jpg')">
-          <span class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
-          Videoni ko'rish
-        </button>
+      <div class="video-frame" id="videoFrame">
+        <iframe id="bunnyPlayer"
+          src="https://player.mediadelivery.net/embed/747094/44f0ed06-98c4-46bd-b42b-d504f4ac81e6?autoplay=false&loop=false&muted=false&preload=true&responsive=true"
+          loading="lazy"
+          allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;fullscreen;"
+          allowfullscreen></iframe>
       </div>
     </div>
   </div>
@@ -519,16 +508,17 @@
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
   })();
 
-  // Video: bosilганда Bunny Stream pleer yuklanadi, 10:28 da "qualify" bloki ochiladi
+  // Video (Bunny Stream): 10:28 da yoki tugagach "qualify" bloki ochiladi
   (function () {
-    const frame = document.getElementById('videoFrame');
-    const ph = document.getElementById('videoPh');
+    const ifr = document.getElementById('bunnyPlayer');
     const qualify = document.getElementById('qualify');
-    if (!frame || !ph) return;
+    if (!ifr) return;
 
     const REVEAL_AT = 628; // 10:28 (soniya)
-
-    function revealQualify() {
+    let fired = false;
+    const fireOnce = () => {
+      if (fired) return;
+      fired = true;
       if (!qualify || !qualify.hidden) return;
       qualify.hidden = false;
       requestAnimationFrame(() => {
@@ -536,7 +526,7 @@
           if (el.getBoundingClientRect().top < innerHeight) el.classList.add('in');
         });
       });
-    }
+    };
 
     function loadPlayerJS(cb) {
       if (window.playerjs) return cb();
@@ -547,29 +537,21 @@
       document.head.appendChild(s);
     }
 
-    ph.addEventListener('click', () => {
-      ph.remove();
-      const ifr = document.createElement('iframe');
-      ifr.src = 'https://player.mediadelivery.net/embed/' + frame.dataset.lib + '/' + frame.dataset.vid +
-        '?autoplay=true&loop=false&muted=false&preload=true&responsive=true';
-      ifr.loading = 'lazy';
-      ifr.setAttribute('allow', 'accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;fullscreen;');
-      ifr.allowFullscreen = true;
-      frame.appendChild(ifr);
-
-      // 10:28 da (yoki video tugagach) — qualify blokini ochish
-      let fired = false;
-      const fireOnce = () => { if (!fired) { fired = true; revealQualify(); } };
-      loadPlayerJS(() => {
-        if (!window.playerjs) { setTimeout(fireOnce, REVEAL_AT * 1000); return; }
-        try {
-          const player = new playerjs.Player(ifr);
-          player.on('ready', () => {
-            player.on('timeupdate', d => { if (d && d.seconds >= REVEAL_AT) fireOnce(); });
-            player.on('ended', fireOnce);
+    loadPlayerJS(() => {
+      if (!window.playerjs) return;
+      try {
+        const player = new playerjs.Player(ifr);
+        player.on('ready', () => {
+          player.on('timeupdate', d => { if (d && d.seconds >= REVEAL_AT) fireOnce(); });
+          player.on('ended', fireOnce);
+          let backup = false;
+          player.on('play', () => {
+            if (backup) return;
+            backup = true;
+            player.getCurrentTime(t => setTimeout(fireOnce, Math.max(0, REVEAL_AT - (t || 0)) * 1000));
           });
-        } catch (e) { setTimeout(fireOnce, REVEAL_AT * 1000); }
-      });
+        });
+      } catch (e) {}
     });
   })();
 </script>
