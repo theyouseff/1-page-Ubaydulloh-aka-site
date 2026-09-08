@@ -167,16 +167,16 @@
   /* video */
   .video-wrap{width:100%;max-width:720px;margin:22px auto 0}
   .video-frame{
-    position:relative;width:100%;aspect-ratio:16/9;
-    border-radius:18px;overflow:hidden;background:#0a0f1c;
+    position:relative;width:100%;
+    border-radius:18px;overflow:hidden;background:#0a0f1c;line-height:0;
     border:1px solid var(--panel-brd);
     box-shadow:0 0 60px -14px rgba(63,140,255,.4), 0 30px 70px -24px rgba(0,0,0,.7);
   }
-  /* iframe biroz balandroq + tepaga tekislangan — pastdagi tugmalar qatori kesiladi,
-     progress bar ko'rinadi, qora tasma kerak emas */
-  .video-frame iframe{position:absolute;top:0;left:0;width:100%;height:calc(100% + 50px);border:0;display:block}
+  /* iframe asl 16:9 nisbatida (zoomsiz, letterboxsiz); pastki 44px salbiy margin bilan
+     kesiladi — tugmalar qatori yo'qoladi, progress bar ko'rinib qoladi */
+  .video-frame iframe{display:block;width:100%;aspect-ratio:16/9;height:auto;border:0;margin-bottom:-44px}
   /* progress bar ustidagi qatlam — sudrab/bosib o'tkazib bo'lmaydi (faqat ko'rsatkich) */
-  .video-frame .v-lock{position:absolute;left:0;right:0;bottom:0;height:40px;z-index:3;cursor:default}
+  .video-frame .v-lock{position:absolute;left:0;right:0;bottom:0;height:38px;z-index:3;cursor:default}
 
   /* qualify / "bu siz uchun agar" */
   .qualify{position:relative;z-index:2;padding:78px 0 88px}
