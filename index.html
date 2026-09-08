@@ -428,25 +428,16 @@
           allowfullscreen></iframe>
       </div>
     </div>
+
+    <!-- Video 10:28 ga yetganda faqat shu tugma chiqadi -->
+    <div id="qualify" hidden>
+      <div class="q-cta reveal">
+        <a href="https://www.drubaydulloh.com/" target="_blank" rel="noopener" class="btn">Konsultatsiyaga ro'yxatdan o'tish <span class="plus">+</span></a>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- BU SIZ UCHUN, AGAR (video 10:28 da ochiladi) -->
-<section class="qualify" id="qualify" hidden>
-  <div class="wrap">
-    <h2 class="q-title reveal">Bu <span class="b">siz uchun</span> agar sizda:</h2>
-    <div class="q-list">
-      <div class="q-card reveal"></div>
-      <div class="q-card reveal"></div>
-      <div class="q-card reveal"></div>
-      <div class="q-card reveal"></div>
-      <div class="q-card warn reveal"></div>
-    </div>
-    <div class="q-cta reveal">
-      <a href="https://www.drubaydulloh.com/" target="_blank" rel="noopener" class="btn">Konsultatsiyaga ro'yxatdan o'tish <span class="plus">+</span></a>
-    </div>
-  </div>
-</section>
 <script>
   const reveals = document.querySelectorAll('.reveal');
   const io = new IntersectionObserver(es => {
@@ -507,9 +498,7 @@
       if (!qualify || !qualify.hidden) return;
       qualify.hidden = false;
       requestAnimationFrame(() => {
-        qualify.querySelectorAll('.reveal').forEach(el => {
-          if (el.getBoundingClientRect().top < innerHeight) el.classList.add('in');
-        });
+        qualify.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
       });
     };
 
