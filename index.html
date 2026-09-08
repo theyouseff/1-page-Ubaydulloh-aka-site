@@ -168,11 +168,12 @@
   .video-wrap{width:100%;max-width:720px;margin:22px auto 0}
   .video-frame{
     position:relative;width:100%;aspect-ratio:16/9;
-    border-radius:18px;overflow:hidden;background:#0a0f1c;
+    border-radius:18px;overflow:hidden;
+    background:#0a0f1c center/cover no-repeat url('https://vz-79f76100-582.b-cdn.net/44f0ed06-98c4-46bd-b42b-d504f4ac81e6/thumbnail_daa33ca4.jpg');
     border:1px solid var(--panel-brd);
     box-shadow:0 0 60px -14px rgba(63,140,255,.4), 0 30px 70px -24px rgba(0,0,0,.7);
   }
-  .video-frame video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#0a0f1c;display:block;cursor:pointer}
+  .video-frame video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:transparent;display:block;cursor:pointer}
   /* markaziy play tugma — faqat to'xtatilganda */
   .video-frame .v-play{
     position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
@@ -205,7 +206,7 @@
   .video-frame.fs{
     position:fixed;inset:0;z-index:99999;
     width:auto;height:auto;max-width:none;margin:0;
-    border:0;border-radius:0;background:#000;aspect-ratio:auto;
+    border:0;border-radius:0;background-color:#000;background-size:contain;aspect-ratio:auto;
   }
   .video-frame.fs video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
   .video-frame .v-close{
@@ -467,8 +468,7 @@
 
     <div class="video-wrap reveal">
       <div class="video-frame" id="videoFrame">
-        <video id="vid" playsinline preload="metadata"
-          poster="https://vz-79f76100-582.b-cdn.net/44f0ed06-98c4-46bd-b42b-d504f4ac81e6/thumbnail_daa33ca4.jpg"></video>
+        <video id="vid" playsinline preload="metadata"></video>
         <button class="v-play" id="vPlay" type="button" aria-label="Videoni ochish">
           <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
         </button>
