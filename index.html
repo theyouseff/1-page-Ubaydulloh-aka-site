@@ -550,6 +550,28 @@
     vid.addEventListener('play', () => frame.classList.add('playing'));
     vid.addEventListener('pause', () => frame.classList.remove('playing'));
 
+    // 2 marta bosish / tap — to'liq ekran (full format)
+    const goFull = () => {
+      try {
+        if (document.fullscreenElement || document.webkitFullscreenElement) {
+          (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+        } else if (vid.requestFullscreen) {
+          vid.requestFullscreen();
+        } else if (vid.webkitEnterFullscreen) {   // iOS Safari — native video fullscreen
+          vid.webkitEnterFullscreen();
+        } else if (vid.webkitRequestFullscreen) {
+          vid.webkitRequestFullscreen();
+        }
+      } catch (e) {}
+    };
+    vid.addEventListener('dblclick', goFull);      // kompyuter: 2 marta bosish
+    let lastTap = 0;                                // telefon: 2 marta tap
+    vid.addEventListener('touchend', () => {
+      const now = Date.now();
+      if (now - lastTap < 320) { goFull(); lastTap = 0; }
+      else lastTap = now;
+    });
+
     // Progress bar + 10:28 + oldinga o'tkazishni bloklash
     let maxT = 0;
     vid.addEventListener('timeupdate', () => {
