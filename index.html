@@ -215,6 +215,11 @@
   .video-frame.fs video,   .video-frame.fs .v-cover,
   .video-frame:fullscreen video,   .video-frame:fullscreen .v-cover,
   .video-frame:-webkit-full-screen video,   .video-frame:-webkit-full-screen .v-cover{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+  /* Android — chetsiz to'ldirish (iOS'ga tegilmaydi, u native) */
+  .video-frame.and.fs,   .video-frame.and:fullscreen,   .video-frame.and:-webkit-full-screen{background-size:cover}
+  .video-frame.and.fs video,   .video-frame.and.fs .v-cover,
+  .video-frame.and:fullscreen video,   .video-frame.and:fullscreen .v-cover,
+  .video-frame.and:-webkit-full-screen video,   .video-frame.and:-webkit-full-screen .v-cover{object-fit:cover}
   .video-frame .v-close{
     position:absolute;top:14px;right:14px;z-index:6;display:none;
     width:38px;height:38px;border:0;border-radius:50%;cursor:pointer;color:#fff;
@@ -557,6 +562,9 @@
     const frame = document.getElementById('videoFrame');
     const qualify = document.getElementById('qualify');
     if (!vid) return;
+
+    // Android — to'liq ekranda chetsiz to'ldirish uchun belgi
+    if (/Android/i.test(navigator.userAgent)) frame.classList.add('and');
 
     const SRC = 'https://vz-79f76100-582.b-cdn.net/44f0ed06-98c4-46bd-b42b-d504f4ac81e6/playlist.m3u8';
     const REVEAL_AT = 628; // 10:28
