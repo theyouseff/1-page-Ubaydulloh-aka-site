@@ -176,7 +176,7 @@
      progress bar ko'rinadi, qora tasma kerak emas */
   .video-frame iframe{position:absolute;top:0;left:0;width:100%;height:calc(100% + 50px);border:0;display:block}
   /* progress bar ustidagi qatlam — sudrab/bosib o'tkazib bo'lmaydi (faqat ko'rsatkich) */
-  .video-frame .v-lock{position:absolute;left:0;right:0;bottom:0;height:40px;z-index:3}
+  .video-frame .v-lock{position:absolute;left:0;right:0;bottom:0;height:40px;z-index:3;cursor:default}
 
   /* qualify / "bu siz uchun agar" */
   .qualify{position:relative;z-index:2;padding:78px 0 88px}
@@ -521,19 +521,16 @@
       try {
         const player = new playerjs.Player(ifr);
         player.on('ready', () => {
-          player.on('timeupdate', d => { if (d && d.seconds >= REVEAL_AT) fireOnce(); });
-          player.on('ended', fireOnce);
-
-          // Oldinga o'tkazib bo'lmaydi: har 0.4s da joriy vaqtni tekshiramiz,
-          // eng uzoq ko'rilgan nuqtadan oldinga sakrasa — qaytarib qo'yamiz.
+          // Oldinga o'tkazib bo'lmaydi: har timeupdate'da tekshiramiz —
+          // eng uzoq ko'rilgan nuqtadan oldinga sakrasa, qaytarib qo'yamiz.
           let maxT = 0;
-          setInterval(() => {
-            player.getCurrentTime(t => {
-              t = t || 0;
-              if (t > maxT + 1.5) player.setCurrentTime(maxT);
-              else if (t > maxT) maxT = t;
-            });
-          }, 400);
+          player.on('timeupdate', d => {
+            const t = (d && d.seconds) || 0;
+            if (t > maxT + 1.5) { player.setCurrentTime(maxT); }
+            else if (t > maxT) { maxT = t; }
+            if (t >= REVEAL_AT) fireOnce();
+          });
+          player.on('ended', fireOnce);
 
           let backup = false;
           player.on('play', () => {
