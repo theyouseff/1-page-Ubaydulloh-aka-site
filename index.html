@@ -187,6 +187,9 @@
   .video-frame .v-play:hover{transform:translate(-50%,-50%) scale(1.06)}
   .video-frame.playing .v-play{opacity:0;pointer-events:none}
   /* progress bar — faqat ko'rsatkich (sudrab bo'lmaydi) */
+  /* oblojka — video birinchi marta boshlanmaguncha turadi */
+  .video-frame .v-cover{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;transition:opacity .3s ease}
+  .video-frame.started .v-cover{opacity:0;pointer-events:none}
   .video-frame .v-bar{position:absolute;left:0;right:0;bottom:0;height:5px;background:rgba(255,255,255,.18);z-index:2}
   .video-frame .v-bar-fill{height:100%;width:0;background:#f4633a;transition:width .15s linear}
   /* to'liq ekran tugmasi — pastki o'ng burchak */
@@ -477,6 +480,7 @@
     <div class="video-wrap reveal">
       <div class="video-frame" id="videoFrame">
         <video id="vid" playsinline preload="metadata"></video>
+        <img class="v-cover" id="vCover" alt="" src="https://vz-79f76100-582.b-cdn.net/44f0ed06-98c4-46bd-b42b-d504f4ac81e6/thumbnail_daa33ca4.jpg">
         <button class="v-play" id="vPlay" type="button" aria-label="Videoni ochish">
           <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
         </button>
@@ -591,7 +595,7 @@
     const toggle = () => { vid.paused ? vid.play() : vid.pause(); };
     vPlay.addEventListener('click', toggle);
     vid.addEventListener('click', toggle);
-    vid.addEventListener('play', () => frame.classList.add('playing'));
+    vid.addEventListener('play', () => { frame.classList.add('playing', 'started'); });
     vid.addEventListener('pause', () => frame.classList.remove('playing'));
 
     // "Kattalashtirish" — qurilmaning BUTUN ekraniga (brauzer paneli ham yopiladi)
