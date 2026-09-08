@@ -172,19 +172,7 @@
     border:1px solid var(--panel-brd);
     box-shadow:0 0 60px -14px rgba(63,140,255,.4), 0 30px 70px -24px rgba(0,0,0,.7);
   }
-  .video-frame video{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
-  /* iframe to'liq o'lchamda (zoomsiz), lekin bosib bo'lmaydi — qoplama boshqaradi */
-  .video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;pointer-events:none}
-  .video-shield{position:absolute;inset:0;z-index:2;cursor:pointer}
-  /* faqat tepa/past chekkani yopadigan tasmalar — YouTube sarlavha/logo/"Другие видео" ni berkitadi.
-     Markaz ochiq qoladi: pauzada oddiy to'xtatilgan kadr ko'rinadi. */
-  .video-shield::before,.video-shield::after{
-    content:"";position:absolute;left:0;right:0;height:19%;
-    background:#05070e;opacity:0;transition:opacity .12s ease;pointer-events:none;
-  }
-  .video-shield::before{top:0}
-  .video-shield::after{bottom:0}
-  .video-shield.mask::before,.video-shield.mask::after{opacity:1}
+  .video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
   .video-ph{
     position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
     color:#eaf0fb;font-family:"Archivo",sans-serif;font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;
@@ -444,7 +432,7 @@
     </div>
 
     <div class="video-wrap reveal">
-      <div class="video-frame" id="videoFrame" data-yt="q-_e2fvhKrI">
+      <div class="video-frame" id="videoFrame" data-lib="747094" data-vid="44f0ed06-98c4-46bd-b42b-d504f4ac81e6">
         <button class="video-ph" id="videoPh" type="button" aria-label="Videoni ochish"
           style="background-image:linear-gradient(rgba(5,7,14,.35),rgba(5,7,14,.6)),url('https://i.ytimg.com/vi/q-_e2fvhKrI/maxresdefault.jpg')">
           <span class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
@@ -531,7 +519,7 @@
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
   })();
 
-  // Video: bosilганда YouTube pleer yuklanadi, 10:28 da "qualify" bloki ochiladi
+  // Video: bosilганда Bunny Stream pleer yuklanadi, 10:28 da "qualify" bloki ochiladi
   (function () {
     const frame = document.getElementById('videoFrame');
     const ph = document.getElementById('videoPh');
@@ -550,66 +538,37 @@
       });
     }
 
-    let apiReq = false;
-    function loadAPI(cb) {
-      if (window.YT && window.YT.Player) return cb();
-      const prev = window.onYouTubeIframeAPIReady;
-      window.onYouTubeIframeAPIReady = () => { prev && prev(); cb(); };
-      if (apiReq) return;
-      apiReq = true;
+    function loadPlayerJS(cb) {
+      if (window.playerjs) return cb();
       const s = document.createElement('script');
-      s.src = 'https://www.youtube.com/iframe_api';
+      s.src = 'https://assets.mediadelivery.net/playerjs/player-0.1.0.min.js';
+      s.onload = cb;
+      s.onerror = cb;
       document.head.appendChild(s);
-    }
-
-    let watch = null;
-    function startWatch(player) {
-      if (watch) return;
-      watch = setInterval(() => {
-        let t = 0;
-        try { t = player.getCurrentTime() || 0; } catch (e) {}
-        if (t >= REVEAL_AT) { revealQualify(); clearInterval(watch); }
-      }, 1000);
     }
 
     ph.addEventListener('click', () => {
       ph.remove();
-      const holder = document.createElement('div');
-      frame.appendChild(holder);
-      loadAPI(() => {
-        const player = new YT.Player(holder, {
-          videoId: frame.dataset.yt,
-          host: 'https://www.youtube-nocookie.com',
-          playerVars: { autoplay: 1, rel: 0, modestbranding: 1, playsinline: 1, controls: 0, iv_load_policy: 3, disablekb: 1 },
-          events: {
-            onReady: e => {
-              e.target.playVideo();
-              const shield = document.createElement('div');
-              shield.className = 'video-shield mask';
-              shield.setAttribute('aria-label', 'Video: pauza / davom');
-              let resumeAt = Date.now();
-              shield.addEventListener('click', () => {
-                const st = player.getPlayerState();
-                if (st === YT.PlayerState.PLAYING) { player.pauseVideo(); shield.classList.add('mask'); }
-                else { resumeAt = Date.now(); shield.classList.add('mask'); player.playVideo(); }
-              });
-              frame.appendChild(shield);
-              frame._shield = shield;
-              // Tasmalar: o'ynamasa YOKI endigina boshlansa yopiq (YouTube chrome o'sha paytda chiqadi)
-              setInterval(() => {
-                let st = -2; try { st = player.getPlayerState(); } catch (e) {}
-                const clear = (st === YT.PlayerState.PLAYING) && (Date.now() - resumeAt > 900);
-                shield.classList.toggle('mask', !clear);
-              }, 120);
-            },
-            onStateChange: e => {
-              const sh = frame._shield;
-              if (e.data === YT.PlayerState.PLAYING) startWatch(e.target);
-              else if (sh) sh.classList.add('mask'); // pauza/bufer/tugadi — tasmalarni darhol yop
-              if (e.data === YT.PlayerState.ENDED) revealQualify();
-            }
-          }
-        });
+      const ifr = document.createElement('iframe');
+      ifr.src = 'https://player.mediadelivery.net/embed/' + frame.dataset.lib + '/' + frame.dataset.vid +
+        '?autoplay=true&loop=false&muted=false&preload=true&responsive=true';
+      ifr.loading = 'lazy';
+      ifr.setAttribute('allow', 'accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;fullscreen;');
+      ifr.allowFullscreen = true;
+      frame.appendChild(ifr);
+
+      // 10:28 da (yoki video tugagach) — qualify blokini ochish
+      let fired = false;
+      const fireOnce = () => { if (!fired) { fired = true; revealQualify(); } };
+      loadPlayerJS(() => {
+        if (!window.playerjs) { setTimeout(fireOnce, REVEAL_AT * 1000); return; }
+        try {
+          const player = new playerjs.Player(ifr);
+          player.on('ready', () => {
+            player.on('timeupdate', d => { if (d && d.seconds >= REVEAL_AT) fireOnce(); });
+            player.on('ended', fireOnce);
+          });
+        } catch (e) { setTimeout(fireOnce, REVEAL_AT * 1000); }
       });
     });
   })();
