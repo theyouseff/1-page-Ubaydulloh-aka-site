@@ -521,17 +521,19 @@
       try {
         const player = new playerjs.Player(ifr);
         player.on('ready', () => {
-          let maxT = 0;               // eng uzoq ko'rilgan nuqta — oldinga o'tkazib bo'lmaydi
-          player.on('timeupdate', d => {
-            const t = (d && d.seconds) || 0;
-            if (t > maxT + 1.3) { player.setCurrentTime(maxT); }
-            else { maxT = Math.max(maxT, t); }
-            if (t >= REVEAL_AT) fireOnce();
-          });
-          player.on('seeked', () => {
-            player.getCurrentTime(t => { if ((t || 0) > maxT + 1.3) player.setCurrentTime(maxT); });
-          });
+          player.on('timeupdate', d => { if (d && d.seconds >= REVEAL_AT) fireOnce(); });
           player.on('ended', fireOnce);
+
+          // Oldinga o'tkazib bo'lmaydi: har 0.4s da joriy vaqtni tekshiramiz,
+          // eng uzoq ko'rilgan nuqtadan oldinga sakrasa — qaytarib qo'yamiz.
+          let maxT = 0;
+          setInterval(() => {
+            player.getCurrentTime(t => {
+              t = t || 0;
+              if (t > maxT + 1.5) player.setCurrentTime(maxT);
+              else if (t > maxT) maxT = t;
+            });
+          }, 400);
 
           let backup = false;
           player.on('play', () => {
