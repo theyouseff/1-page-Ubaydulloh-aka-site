@@ -50,22 +50,28 @@
   .warnbar{
     display:flex;align-items:center;justify-content:center;
     width:100%;overflow:hidden;
-    padding:13px 22px;border-radius:999px;
-    border:1px solid rgba(226,74,60,.6);
-    background:rgba(226,74,60,.08);
-    color:#fff;
-    box-shadow:0 0 34px -8px rgba(226,74,60,.35), inset 0 0 22px -10px rgba(226,74,60,.45);
+    padding:12px 24px;border-radius:999px;
+    border:1.5px solid rgba(233,78,63,.8);
+    background:linear-gradient(180deg,rgba(233,78,63,.22),rgba(233,78,63,.05) 55%,rgba(233,78,63,.16));
+    box-shadow:0 0 44px -6px rgba(233,78,63,.55), inset 0 0 30px -6px rgba(233,78,63,.45);
     animation:warnpulse 2.6s ease-in-out infinite;
   }
-  .warnbar span{
-    display:inline-block;white-space:nowrap;transform-origin:center;
-    font-family:"Archivo",sans-serif;font-weight:700;color:#fff;
-    font-size:clamp(7px,2.1vw,14px);letter-spacing:.06em;text-transform:uppercase;
+  .warnbar > .wb-inner{
+    display:inline-flex;align-items:center;gap:16px;
+    white-space:nowrap;transform-origin:center;
   }
-  @media(min-width:721px){ .warnbar span{letter-spacing:.12em} }
+  .wb-ico{flex:none;width:30px;height:30px;color:#fff;filter:drop-shadow(0 0 6px rgba(233,78,63,.7))}
+  .wb-ico svg{width:100%;height:100%;display:block}
+  .wb-div{flex:none;width:1.5px;height:24px;background:rgba(255,255,255,.4)}
+  .wb-txt{
+    font-family:"Archivo",sans-serif;font-weight:800;color:#fff;
+    font-size:clamp(7px,2.1vw,14px);letter-spacing:.08em;text-transform:uppercase;
+  }
+  .wb-txt b{color:#ff5140;font-weight:800}
+  @media(min-width:721px){ .wb-txt{letter-spacing:.13em} }
   @keyframes warnpulse{
-    0%,100%{border-color:rgba(226,74,60,.45);box-shadow:0 0 28px -10px rgba(226,74,60,.25), inset 0 0 22px -12px rgba(226,74,60,.4)}
-    50%{border-color:rgba(226,74,60,.9);box-shadow:0 0 46px -6px rgba(226,74,60,.5), inset 0 0 24px -8px rgba(226,74,60,.55)}
+    0%,100%{border-color:rgba(233,78,63,.55);box-shadow:0 0 34px -8px rgba(233,78,63,.4), inset 0 0 26px -8px rgba(233,78,63,.38)}
+    50%{border-color:rgba(233,78,63,1);box-shadow:0 0 56px -4px rgba(233,78,63,.65), inset 0 0 28px -6px rgba(233,78,63,.5)}
   }
 
   .btn{
@@ -426,7 +432,13 @@
 <section class="hero">
   <div class="wrap hero-grid">
     <div class="hero-text reveal">
-      <div class="warnbar"><span>Agar tishlaringiz qolmagan bo'lsa, videoni oxirigacha ko'ring!</span></div>
+      <div class="warnbar">
+        <span class="wb-inner">
+          <span class="wb-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span>
+          <span class="wb-div"></span>
+          <span class="wb-txt">Agar tishlaringiz qolmagan bo'lsa, videoni <b>oxirigacha ko'ring!</b></span>
+        </span>
+      </div>
       <h1><span class="ln">1 kunda 8 yoki 12 ta implant o'rnatib</span><span class="ln">1 hafta ichida chiroyli tabassumingizni</span><span class="ln b">tiklash mumkinligini bilib oling</span></h1>
       <p class="lead">Hatto tishlaringiz qolmagan bo'lsa ham yoki olinadigan protez taqib yurgan bo'lsangiz ham.</p>
     </div>
