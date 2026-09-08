@@ -169,16 +169,16 @@
   .video-frame video{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
   /* iframe to'liq o'lchamda (zoomsiz), lekin bosib bo'lmaydi — qoplama boshqaradi */
   .video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;pointer-events:none}
-  .video-shield{
-    position:absolute;inset:0;z-index:2;cursor:pointer;
-    display:flex;align-items:center;justify-content:center;
-    background:#05070e;transition:opacity .18s ease;
+  .video-shield{position:absolute;inset:0;z-index:2;cursor:pointer}
+  /* faqat tepa/past chekkani yopadigan tasmalar — YouTube sarlavha/logo/"Другие видео" ni berkitadi.
+     Markaz ochiq qoladi: pauzada oddiy to'xtatilgan kadr ko'rinadi. */
+  .video-shield::before,.video-shield::after{
+    content:"";position:absolute;left:0;right:0;height:19%;
+    background:#05070e;opacity:0;transition:opacity .12s ease;pointer-events:none;
   }
-  .video-shield .sh-icon{width:64px;height:64px;opacity:1;pointer-events:none}
-  .video-shield .sh-icon svg{width:100%;height:100%;fill:#fff;filter:drop-shadow(0 3px 14px rgba(0,0,0,.7))}
-  /* o'ynayotganda qoplama ko'rinmaydi (lekin bosishni ushlab turadi) */
-  .video-shield.playing{opacity:0}
-  .video-shield.playing .sh-icon{display:none}
+  .video-shield::before{top:0}
+  .video-shield::after{bottom:0}
+  .video-shield.mask::before,.video-shield.mask::after{opacity:1}
   .video-ph{
     position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
     color:#eaf0fb;font-family:"Archivo",sans-serif;font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;
@@ -573,29 +573,27 @@
             onReady: e => {
               e.target.playVideo();
               const shield = document.createElement('div');
-              shield.className = 'video-shield';
+              shield.className = 'video-shield mask';
               shield.setAttribute('aria-label', 'Video: pauza / davom');
-              shield.innerHTML = '<span class="sh-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>';
-              // qoplama sukut bo'yicha YOPIQ (opaque) — YouTube interfeysi ko'rinmaydi
               let resumeAt = Date.now();
               shield.addEventListener('click', () => {
                 const st = player.getPlayerState();
-                if (st === YT.PlayerState.PLAYING) { player.pauseVideo(); shield.classList.remove('playing'); }
-                else { resumeAt = Date.now(); shield.classList.remove('playing'); player.playVideo(); }
+                if (st === YT.PlayerState.PLAYING) { player.pauseVideo(); shield.classList.add('mask'); }
+                else { resumeAt = Date.now(); shield.classList.add('mask'); player.playVideo(); }
               });
               frame.appendChild(shield);
               frame._shield = shield;
-              // Faqat aniq PLAYING bo'lsa VA boshlanganiga >900ms bo'lsa — qoplama ochiladi
+              // Tasmalar: o'ynamasa YOKI endigina boshlansa yopiq (YouTube chrome o'sha paytda chiqadi)
               setInterval(() => {
                 let st = -2; try { st = player.getPlayerState(); } catch (e) {}
-                const showVideo = (st === YT.PlayerState.PLAYING) && (Date.now() - resumeAt > 900);
-                shield.classList.toggle('playing', showVideo);
+                const clear = (st === YT.PlayerState.PLAYING) && (Date.now() - resumeAt > 900);
+                shield.classList.toggle('mask', !clear);
               }, 120);
             },
             onStateChange: e => {
               const sh = frame._shield;
               if (e.data === YT.PlayerState.PLAYING) startWatch(e.target);
-              else if (sh) sh.classList.remove('playing'); // pauza/bufer/tugadi — darhol yop
+              else if (sh) sh.classList.add('mask'); // pauza/bufer/tugadi — tasmalarni darhol yop
               if (e.data === YT.PlayerState.ENDED) revealQualify();
             }
           }
