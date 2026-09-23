@@ -229,6 +229,14 @@
     border:0;border-radius:0;background-color:#000;aspect-ratio:auto;
   }
   .video-frame.fs{position:fixed;inset:0;z-index:99999}
+  /* telefon tik holatda (iPhone: haqiqiy fullscreen yo'q) — YouTube kabi videoni yotiq (90°) qilib butun ekranga yoyamiz */
+  @media (hover:none) and (pointer:coarse) and (orientation:portrait){
+    .video-frame.fs{
+      inset:auto;top:0;left:0;
+      width:100vh;width:100dvh;height:100vw;
+      transform-origin:0 0;transform:rotate(90deg) translateY(-100%);
+    }
+  }
   .video-frame .v-close{
     position:absolute;top:14px;right:14px;z-index:6;display:none;
     width:38px;height:38px;border:0;border-radius:50%;cursor:pointer;color:#fff;
