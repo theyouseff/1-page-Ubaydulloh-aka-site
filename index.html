@@ -236,6 +236,23 @@
       width:100vh;width:100dvh;height:100vw;
       transform-origin:0 0;transform:rotate(90deg) translateY(-100%);
     }
+    .video-frame.fs #kPlayer{
+      inset:auto;top:50%;left:50%;
+      width:max(100vh,177.78vw);height:max(56.25vh,100vw);
+      width:max(100dvh,177.78vw);height:max(56.25dvh,100vw);
+      transform:translate(-50%,-50%);
+    }
+  }
+  /* telefon yotiq holatda — YouTube kabi: yon qora polosalar o'rniga video ekranni to'ldiradi (16:9 nisbati buzilmaydi, ortiqcha qismi kesiladi) */
+  @media (hover:none) and (pointer:coarse) and (orientation:landscape){
+    .video-frame.fs #kPlayer,
+    .video-frame:fullscreen #kPlayer,
+    .video-frame:-webkit-full-screen #kPlayer{
+      inset:auto;top:50%;left:50%;
+      width:max(100vw,177.78vh);height:max(56.25vw,100vh);
+      width:max(100vw,177.78dvh);height:max(56.25vw,100dvh);
+      transform:translate(-50%,-50%);
+    }
   }
   .video-frame .v-close{
     position:absolute;top:14px;right:14px;z-index:6;display:none;
