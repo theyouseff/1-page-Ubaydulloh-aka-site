@@ -172,6 +172,7 @@
     border:1px solid var(--panel-brd);
     box-shadow:0 0 60px -14px rgba(63,140,255,.4), 0 30px 70px -24px rgba(0,0,0,.7);
   }
+  .video-frame video#kPlayer{object-fit:cover;background:#000;cursor:pointer}
   .video-frame #kPlayer,
   .video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
   /* oblojka — video birinchi marta boshlanmaguncha turadi (bosish iframe'ga o'tadi) */
@@ -593,6 +594,7 @@
     if (!frame || !holder) return;
 
     const VIDEO_URL = 'https://kinescope.io/embed/vVtjrxph9JN5x6XyrH2fgh';
+    const HLS_URL = 'https://kinescope.io/f25046b6-cc21-4d0b-b35a-b822e9b0de46/master.m3u8';
     const REVEAL_AT = 628; // 10:28
 
     let fired = false;
@@ -606,47 +608,93 @@
       });
     };
 
-    // Pleyer: boshqaruvsiz, oranj rang, klaviatura o'chirilgan
+    // Umumiy holat: progress bar, 10:28 da CTA, oldinga o'tkazishni bloklash
     let maxT = 0, duration = 0;
-    window.onKinescopeIframeAPIReady = function (factory) {
-      factory.create('kPlayer', {
-        url: VIDEO_URL,
-        size: { width: '100%', height: '100%' },
-        behavior: { keyboard: false, localStorage: false, playsInline: true, autoPlay: false, preload: 'metadata' },
-        ui: { controls: false, mainPlayButton: false },
-        theme: { colors: { primary: '#f4633a' } }
-      }).then(player => {
-        const E = player.Events;
-        player.on(E.Ready, e => { duration = (e.data && e.data.duration) || duration; });
-        player.on(E.DurationChange, e => { duration = e.data.duration || duration; });
-        player.on(E.TimeUpdate, e => {
-          const ct = e.data.currentTime || 0;
-          if (ct > maxT + 1.5) { player.seekTo(maxT); return; }   // oldinga o'tkazishni bloklash
-          if (ct > maxT) maxT = ct;
-          if (duration) vFill.style.width = Math.min(100, ct / duration * 100).toFixed(2) + '%';
-          if (ct >= REVEAL_AT) fireOnce();
+    const onPlay  = () => frame.classList.add('playing', 'started');
+    const onPause = () => frame.classList.remove('playing');
+    const onEnded = () => { frame.classList.remove('playing'); fireOnce(); };
+    // ct ni qabul qiladi; oldinga sakralgan bo'lsa false qaytaradi (chaqiruvchi orqaga qaytaradi)
+    const onTime = ct => {
+      if (ct > maxT + 1.5) return false;
+      if (ct > maxT) maxT = ct;
+      if (duration) vFill.style.width = Math.min(100, ct / duration * 100).toFixed(2) + '%';
+      if (ct >= REVEAL_AT) fireOnce();
+      return true;
+    };
+
+    // iPhone: brauzer iframe'ni butun ekranga chiqara olmaydi. Shuning uchun iPhone'da
+    // videoni sahifaning o'z <video> elementida (Kinescope HLS) o'ynatamiz — kattalashtirish
+    // tugmasi Apple'ning haqiqiy to'liq ekran pleyerini ochadi (manzil paneli ko'rinmaydi).
+    const probe = document.createElement('video');
+    const IOS_NATIVE = !(frame.requestFullscreen || frame.webkitRequestFullscreen)
+      && typeof probe.webkitEnterFullscreen === 'function'
+      && !!probe.canPlayType('application/vnd.apple.mpegurl');
+    let vid = null;
+
+    if (IOS_NATIVE) {
+      vid = document.createElement('video');
+      vid.id = 'kPlayer';
+      vid.setAttribute('playsinline', '');
+      vid.setAttribute('webkit-playsinline', '');
+      vid.playsInline = true;
+      vid.preload = 'metadata';
+      vid.src = HLS_URL;
+      holder.replaceWith(vid);
+
+      vid.addEventListener('click', () => { vid.paused ? vid.play() : vid.pause(); });
+      vid.addEventListener('play', onPlay);
+      vid.addEventListener('playing', onPlay);
+      vid.addEventListener('pause', onPause);
+      vid.addEventListener('ended', onEnded);
+      vid.addEventListener('loadedmetadata', () => { duration = vid.duration || duration; });
+      vid.addEventListener('durationchange', () => { duration = vid.duration || duration; });
+      const guard = () => { if (!onTime(vid.currentTime || 0)) vid.currentTime = maxT; };
+      vid.addEventListener('timeupdate', guard);
+      vid.addEventListener('seeking', guard);   // Apple pleyerining polzunogi bilan oldinga sakrashni to'sish
+    } else {
+      // Kompyuter / Android: Kinescope pleyeri — boshqaruvsiz, klaviatura o'chirilgan
+      window.onKinescopeIframeAPIReady = function (factory) {
+        factory.create('kPlayer', {
+          url: VIDEO_URL,
+          size: { width: '100%', height: '100%' },
+          behavior: { keyboard: false, localStorage: false, playsInline: true, autoPlay: false, preload: 'metadata' },
+          ui: { controls: false, mainPlayButton: false },
+          theme: { colors: { primary: '#f4633a' } }
+        }).then(player => {
+          const E = player.Events;
+          player.on(E.Ready, e => { duration = (e.data && e.data.duration) || duration; });
+          player.on(E.DurationChange, e => { duration = e.data.duration || duration; });
+          player.on(E.TimeUpdate, e => { if (!onTime(e.data.currentTime || 0)) player.seekTo(maxT); });
+          player.on(E.Play, onPlay);
+          player.on(E.Playing, onPlay);
+          player.on(E.Pause, onPause);
+          player.on(E.Ended, onEnded);
         });
-        player.on(E.Play, () => frame.classList.add('playing', 'started'));
-        player.on(E.Playing, () => frame.classList.add('playing', 'started'));
-        player.on(E.Pause, () => frame.classList.remove('playing'));
-        player.on(E.Ended, () => { frame.classList.remove('playing'); fireOnce(); });
-      });
-    };
-    const s = document.createElement('script');
-    s.src = 'https://player.kinescope.io/latest/iframe.player.js';
-    s.onerror = () => {   // zaxira: oddiy embed
-      holder.innerHTML = '<iframe src="' + VIDEO_URL + '" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen></iframe>';
-    };
-    document.head.appendChild(s);
+      };
+      const s = document.createElement('script');
+      s.src = 'https://player.kinescope.io/latest/iframe.player.js';
+      s.onerror = () => {   // zaxira: oddiy embed
+        holder.innerHTML = '<iframe src="' + VIDEO_URL + '" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen></iframe>';
+      };
+      document.head.appendChild(s);
+    }
 
     // "Kattalashtirish" — qurilmaning BUTUN ekraniga (brauzer paneli ham yopiladi)
     const fakeOn = () => { frame.classList.add('fs'); document.body.classList.add('v-fs-lock'); };
     const fakeOff = () => { frame.classList.remove('fs'); document.body.classList.remove('v-fs-lock'); };
     const realFS = () => document.fullscreenElement || document.webkitFullscreenElement;
+    const iosFS = () => {                                  // iPhone: Apple'ning to'liq ekran pleyeri
+      try { vid.webkitEnterFullscreen(); return; } catch (e) {}
+      if (vid.readyState >= 1) { fakeOn(); return; }      // boshqa sabab bilan ochilmadi — zaxira
+      // metadata hali yuklanmagan — yuklangach ochamiz
+      vid.play().catch(() => {});
+      vid.addEventListener('loadedmetadata', () => { try { vid.webkitEnterFullscreen(); } catch (e) { fakeOn(); } }, { once: true });
+    };
     const enterFS = () => {
-      if (frame.requestFullscreen)            { frame.requestFullscreen().catch(fakeOn); }
+      if (vid)                                { iosFS(); }
+      else if (frame.requestFullscreen)       { frame.requestFullscreen().catch(fakeOn); }
       else if (frame.webkitRequestFullscreen) { frame.webkitRequestFullscreen(); }
-      else { fakeOn(); }                                                             // iPhone Safari
+      else { fakeOn(); }
     };
     const exitFS = () => {
       if (realFS()) { (document.exitFullscreen || document.webkitExitFullscreen).call(document); }
