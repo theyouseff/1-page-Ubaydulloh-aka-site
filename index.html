@@ -172,24 +172,21 @@
     border:1px solid var(--panel-brd);
     box-shadow:0 0 60px -14px rgba(63,140,255,.4), 0 30px 70px -24px rgba(0,0,0,.7);
   }
-  .video-frame video{position:absolute;inset:-1px;width:calc(100% + 2px);height:calc(100% + 2px);object-fit:cover;background:transparent;display:block;cursor:pointer}
-  /* markaziy play tugma — faqat to'xtatilganda */
+  .video-frame #kPlayer,
+  .video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+  /* markaziy play tugma — faqat ko'rinish (pointer-events:none: bosish iframe'ga o'tadi), video to'xtaganda ko'rinadi */
   .video-frame .v-play{
     position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-    width:76px;height:76px;border-radius:50%;border:0;cursor:pointer;z-index:3;
+    width:76px;height:76px;border-radius:50%;z-index:3;pointer-events:none;
     display:flex;align-items:center;justify-content:center;
     background:linear-gradient(135deg,#ff8a5c,#f4633a);
     box-shadow:0 10px 34px -8px rgba(244,99,58,.6);
-    transition:opacity .2s, transform .2s;
+    transition:opacity .2s;
   }
   .video-frame .v-play svg{width:30px;height:30px;fill:#fff;margin-left:4px}
-  .video-frame .v-play:hover{transform:translate(-50%,-50%) scale(1.06)}
-  .video-frame.playing .v-play{opacity:0;pointer-events:none}
+  .video-frame.playing .v-play{opacity:0}
   /* progress bar — faqat ko'rsatkich (sudrab bo'lmaydi) */
-  /* oblojka — video birinchi marta boshlanmaguncha turadi */
-  .video-frame .v-cover{position:absolute;inset:-1px;width:calc(100% + 2px);height:calc(100% + 2px);object-fit:cover;z-index:1;transition:opacity .25s ease}
-  .video-frame.started .v-cover{opacity:0;pointer-events:none}
-  .video-frame .v-bar{position:absolute;left:0;right:0;bottom:0;height:5px;background:rgba(255,255,255,.18);z-index:2}
+  .video-frame .v-bar{position:absolute;left:0;right:0;bottom:0;height:5px;background:rgba(255,255,255,.18);z-index:2;pointer-events:none}
   .video-frame .v-bar-fill{height:100%;width:0;background:#f4633a;transition:width .15s linear}
   /* to'liq ekran tugmasi — pastki o'ng burchak */
   .video-frame .v-full{
@@ -204,22 +201,14 @@
   .video-frame .v-full svg{width:19px;height:19px}
   @media(max-width:640px){ .video-frame .v-full{width:32px;height:32px;right:9px;bottom:11px} .video-frame .v-full svg{width:17px;height:17px} }
 
-  /* "kattalashtirilgan" rejim — video butun holicha (zoomsiz) */
+  /* "kattalashtirilgan" rejim */
   .video-frame.fs,
   .video-frame:fullscreen,
   .video-frame:-webkit-full-screen{
     width:100%;height:100%;max-width:none;margin:0;
-    border:0;border-radius:0;background-color:#000;background-size:contain;aspect-ratio:auto;
+    border:0;border-radius:0;background-color:#000;aspect-ratio:auto;
   }
   .video-frame.fs{position:fixed;inset:0;z-index:99999}
-  .video-frame.fs video,   .video-frame.fs .v-cover,
-  .video-frame:fullscreen video,   .video-frame:fullscreen .v-cover,
-  .video-frame:-webkit-full-screen video,   .video-frame:-webkit-full-screen .v-cover{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
-  /* Android — chetsiz to'ldirish (iOS'ga tegilmaydi, u native) */
-  .video-frame.and.fs,   .video-frame.and:fullscreen,   .video-frame.and:-webkit-full-screen{background-size:cover}
-  .video-frame.and.fs video,   .video-frame.and.fs .v-cover,
-  .video-frame.and:fullscreen video,   .video-frame.and:fullscreen .v-cover,
-  .video-frame.and:-webkit-full-screen video,   .video-frame.and:-webkit-full-screen .v-cover{object-fit:cover}
   .video-frame .v-close{
     position:absolute;top:14px;right:14px;z-index:6;display:none;
     width:38px;height:38px;border:0;border-radius:50%;cursor:pointer;color:#fff;
@@ -483,11 +472,10 @@
 
     <div class="video-wrap reveal">
       <div class="video-frame" id="videoFrame">
-        <video id="vid" playsinline preload="metadata"></video>
-        <img class="v-cover" id="vCover" alt="" src="https://vz-79f76100-582.b-cdn.net/44f0ed06-98c4-46bd-b42b-d504f4ac81e6/thumbnail_daa33ca4.jpg">
-        <button class="v-play" id="vPlay" type="button" aria-label="Videoni ochish">
+        <div id="kPlayer"></div>
+        <div class="v-play" aria-hidden="true">
           <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-        </button>
+        </div>
         <button class="v-full" id="vFull" type="button" aria-label="Kattalashtirish">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
         </button>
@@ -553,20 +541,16 @@
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
   })();
 
-  // Video: o'z pleyerimiz (Bunny raw HLS) — faqat ingichka progress bar, boshqaruvsiz.
-  // O'tkazib bo'lmaydi. 10:28 da yoki tugagach "qualify" bloki ochiladi.
+  // Video: Kinescope pleyeri (IFrame API) — boshqaruv paneli yo'q, faqat ingichka progress bar.
+  // O'tkazib bo'lmaydi. 10:28 da yoki tugagach "qualify" (CTA tugma) ochiladi.
   (function () {
-    const vid = document.getElementById('vid');
-    const vPlay = document.getElementById('vPlay');
-    const vFill = document.getElementById('vFill');
     const frame = document.getElementById('videoFrame');
+    const holder = document.getElementById('kPlayer');
+    const vFill = document.getElementById('vFill');
     const qualify = document.getElementById('qualify');
-    if (!vid) return;
+    if (!frame || !holder) return;
 
-    // Android — to'liq ekranda chetsiz to'ldirish uchun belgi
-    if (/Android/i.test(navigator.userAgent)) frame.classList.add('and');
-
-    const SRC = 'https://vz-79f76100-582.b-cdn.net/44f0ed06-98c4-46bd-b42b-d504f4ac81e6/playlist.m3u8';
+    const VIDEO_URL = 'https://kinescope.io/embed/vVtjrxph9JN5x6XyrH2fgh';
     const REVEAL_AT = 628; // 10:28
 
     let fired = false;
@@ -580,40 +564,47 @@
       });
     };
 
-    // HLS manbasini ulash
-    if (vid.canPlayType('application/vnd.apple.mpegurl')) {
-      vid.src = SRC; // Safari / iOS — native HLS
-    } else {
-      const s = document.createElement('script');
-      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.15/hls.min.js';
-      s.onload = () => {
-        if (window.Hls && Hls.isSupported()) {
-          const hls = new Hls({ capLevelToPlayerSize: true });
-          hls.loadSource(SRC);
-          hls.attachMedia(vid);
-        } else {
-          vid.src = SRC;
-        }
-      };
-      s.onerror = () => { vid.src = SRC; };
-      document.head.appendChild(s);
-    }
-
-    const toggle = () => { vid.paused ? vid.play() : vid.pause(); };
-    vPlay.addEventListener('click', toggle);
-    vid.addEventListener('click', toggle);
-    vid.addEventListener('play', () => { frame.classList.add('playing', 'started'); });
-    vid.addEventListener('pause', () => frame.classList.remove('playing'));
+    // Pleyer: boshqaruvsiz, oranj rang, klaviatura o'chirilgan
+    let maxT = 0, duration = 0;
+    window.onKinescopeIframeAPIReady = function (factory) {
+      factory.create('kPlayer', {
+        url: VIDEO_URL,
+        size: { width: '100%', height: '100%' },
+        behavior: { keyboard: false, localStorage: false, playsInline: true, autoPlay: false, preload: 'metadata' },
+        ui: { controls: false, mainPlayButton: false },
+        theme: { colors: { primary: '#f4633a' } }
+      }).then(player => {
+        const E = player.Events;
+        player.on(E.Ready, e => { duration = (e.data && e.data.duration) || duration; });
+        player.on(E.DurationChange, e => { duration = e.data.duration || duration; });
+        player.on(E.TimeUpdate, e => {
+          const ct = e.data.currentTime || 0;
+          if (ct > maxT + 1.5) { player.seekTo(maxT); return; }   // oldinga o'tkazishni bloklash
+          if (ct > maxT) maxT = ct;
+          if (duration) vFill.style.width = Math.min(100, ct / duration * 100).toFixed(2) + '%';
+          if (ct >= REVEAL_AT) fireOnce();
+        });
+        player.on(E.Play, () => frame.classList.add('playing'));
+        player.on(E.Playing, () => frame.classList.add('playing'));
+        player.on(E.Pause, () => frame.classList.remove('playing'));
+        player.on(E.Ended, () => { frame.classList.remove('playing'); fireOnce(); });
+      });
+    };
+    const s = document.createElement('script');
+    s.src = 'https://player.kinescope.io/latest/iframe.player.js';
+    s.onerror = () => {   // zaxira: oddiy embed
+      holder.innerHTML = '<iframe src="' + VIDEO_URL + '" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen></iframe>';
+    };
+    document.head.appendChild(s);
 
     // "Kattalashtirish" — qurilmaning BUTUN ekraniga (brauzer paneli ham yopiladi)
     const fakeOn = () => { frame.classList.add('fs'); document.body.classList.add('v-fs-lock'); };
     const fakeOff = () => { frame.classList.remove('fs'); document.body.classList.remove('v-fs-lock'); };
     const realFS = () => document.fullscreenElement || document.webkitFullscreenElement;
     const enterFS = () => {
-      if (frame.requestFullscreen)      { frame.requestFullscreen().catch(fakeOn); }
+      if (frame.requestFullscreen)            { frame.requestFullscreen().catch(fakeOn); }
       else if (frame.webkitRequestFullscreen) { frame.webkitRequestFullscreen(); }
-      else if (vid.webkitEnterFullscreen)     { vid.webkitEnterFullscreen(); }   // iOS Safari
-      else { fakeOn(); }
+      else { fakeOn(); }                                                             // iPhone Safari
       try { screen.orientation.lock('landscape'); } catch (e) {}
     };
     const exitFS = () => {
@@ -621,39 +612,16 @@
       fakeOff();
       try { screen.orientation.unlock(); } catch (e) {}
     };
-    const toggleFS = () => (realFS() || frame.classList.contains('fs')) ? exitFS() : enterFS();
     document.addEventListener('fullscreenchange', () => {
       const on = document.fullscreenElement === frame;
       frame.classList.toggle('fs', on);
       document.body.classList.toggle('v-fs-lock', on);
-    });
-
-    vid.addEventListener('dblclick', toggleFS);     // kompyuter: 2 marta bosish
-    let lastTap = 0;                                 // telefon: 2 marta tap
-    vid.addEventListener('touchend', () => {
-      const now = Date.now();
-      if (now - lastTap < 320) { toggleFS(); lastTap = 0; }
-      else lastTap = now;
     });
     const vFull = document.getElementById('vFull');
     const vClose = document.getElementById('vClose');
     if (vFull) vFull.addEventListener('click', e => { e.stopPropagation(); enterFS(); });
     if (vClose) vClose.addEventListener('click', e => { e.stopPropagation(); exitFS(); });
     addEventListener('keydown', e => { if (e.key === 'Escape') exitFS(); });
-
-    // Progress bar + 10:28 + oldinga o'tkazishni bloklash
-    let maxT = 0;
-    vid.addEventListener('timeupdate', () => {
-      const ct = vid.currentTime || 0;
-      if (ct > maxT + 1.5) { vid.currentTime = maxT; return; }
-      if (ct > maxT) maxT = ct;
-      const d = vid.duration || 0;
-      if (d) vFill.style.width = (ct / d * 100).toFixed(2) + '%';
-      if (ct >= REVEAL_AT) fireOnce();
-    });
-    vid.addEventListener('ended', fireOnce);
-    // klaviatura bilan sakrashni to'sish
-    vid.addEventListener('keydown', e => e.preventDefault());
   })();
 </script>
 </body>
