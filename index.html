@@ -174,17 +174,37 @@
   }
   .video-frame #kPlayer,
   .video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+  /* oblojka — video birinchi marta boshlanmaguncha turadi (bosish iframe'ga o'tadi) */
+  .video-frame .v-cover{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;pointer-events:none;transition:opacity .3s ease}
+  .video-frame.started .v-cover{opacity:0}
   /* markaziy play tugma — faqat ko'rinish (pointer-events:none: bosish iframe'ga o'tadi), video to'xtaganda ko'rinadi */
   .video-frame .v-play{
     position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-    width:76px;height:76px;border-radius:50%;z-index:3;pointer-events:none;
+    width:92px;height:92px;z-index:3;pointer-events:none;
     display:flex;align-items:center;justify-content:center;
-    background:linear-gradient(135deg,#ff8a5c,#f4633a);
-    box-shadow:0 10px 34px -8px rgba(244,99,58,.6);
     transition:opacity .2s;
   }
-  .video-frame .v-play svg{width:30px;height:30px;fill:#fff;margin-left:4px}
+  .video-frame .v-play::before,
+  .video-frame .v-play::after{
+    content:"";position:absolute;inset:0;border-radius:50%;
+    border:2px solid rgba(99,164,255,.7);
+    animation:playRing 2.4s ease-out infinite;
+  }
+  .video-frame .v-play::after{animation-delay:1.2s}
+  @keyframes playRing{0%{transform:scale(1);opacity:.85}100%{transform:scale(1.75);opacity:0}}
+  .video-frame .v-play .core{
+    position:relative;width:100%;height:100%;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(145deg,#7db4ff 0%,#3f8cff 45%,#1f4fd6 100%);
+    border:1.5px solid rgba(255,255,255,.55);
+    box-shadow:0 0 0 8px rgba(63,140,255,.22), 0 14px 44px -6px rgba(63,140,255,.75), inset 0 2px 0 rgba(255,255,255,.45);
+  }
+  .video-frame .v-play svg{width:36px;height:36px;fill:#fff;margin-left:5px;filter:drop-shadow(0 2px 6px rgba(8,30,90,.5))}
   .video-frame.playing .v-play{opacity:0}
+  @media(max-width:640px){
+    .video-frame .v-play{width:68px;height:68px}
+    .video-frame .v-play svg{width:27px;height:27px;margin-left:4px}
+  }
   /* progress bar — faqat ko'rsatkich (sudrab bo'lmaydi) */
   .video-frame .v-bar{position:absolute;left:0;right:0;bottom:0;height:5px;background:rgba(255,255,255,.18);z-index:2;pointer-events:none}
   .video-frame .v-bar-fill{height:100%;width:0;background:#f4633a;transition:width .15s linear}
@@ -473,9 +493,10 @@
     <div class="video-wrap reveal">
       <div class="video-frame" id="videoFrame">
         <div id="kPlayer"></div>
-        <div class="v-play" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-        </div>
+        <img class="v-cover" alt="" src="cover.webp">
+        <div class="v-play" aria-hidden="true"><span class="core">
+          <svg viewBox="0 0 24 24"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.5-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5z"/></svg>
+        </span></div>
         <button class="v-full" id="vFull" type="button" aria-label="Kattalashtirish">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
         </button>
@@ -584,8 +605,8 @@
           if (duration) vFill.style.width = Math.min(100, ct / duration * 100).toFixed(2) + '%';
           if (ct >= REVEAL_AT) fireOnce();
         });
-        player.on(E.Play, () => frame.classList.add('playing'));
-        player.on(E.Playing, () => frame.classList.add('playing'));
+        player.on(E.Play, () => frame.classList.add('playing', 'started'));
+        player.on(E.Playing, () => frame.classList.add('playing', 'started'));
         player.on(E.Pause, () => frame.classList.remove('playing'));
         player.on(E.Ended, () => { frame.classList.remove('playing'); fireOnce(); });
       });
