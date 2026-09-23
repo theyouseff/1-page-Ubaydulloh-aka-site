@@ -229,18 +229,14 @@
     border:0;border-radius:0;background-color:#000;aspect-ratio:auto;
   }
   .video-frame.fs{position:fixed;inset:0;z-index:99999}
-  /* telefon tik holatda (iPhone: haqiqiy fullscreen yo'q) — YouTube kabi videoni yotiq (90°) qilib butun ekranga yoyamiz */
+  /* telefon tik holatda — video burilmaydi, to'g'ri turadi: ekran kengligi bo'ylab 16:9, markazda */
   @media (hover:none) and (pointer:coarse) and (orientation:portrait){
-    .video-frame.fs{
-      inset:auto;top:0;left:0;
-      width:100vh;width:100dvh;height:100vw;
-      transform-origin:0 0;transform:rotate(90deg) translateY(-100%);
-    }
-    .video-frame.fs #kPlayer{
-      inset:auto;top:50%;left:50%;
-      width:max(100vh,177.78vw);height:max(56.25vh,100vw);
-      width:max(100dvh,177.78vw);height:max(56.25dvh,100vw);
-      transform:translate(-50%,-50%);
+    .video-frame.fs #kPlayer,   .video-frame.fs .v-cover,
+    .video-frame:fullscreen #kPlayer,   .video-frame:fullscreen .v-cover,
+    .video-frame:-webkit-full-screen #kPlayer,   .video-frame:-webkit-full-screen .v-cover{
+      inset:auto;top:50%;left:0;
+      width:100%;height:56.25vw;
+      transform:translateY(-50%);
     }
   }
   /* telefon yotiq holatda — YouTube kabi: yon qora polosalar o'rniga video ekranni to'ldiradi (16:9 nisbati buzilmaydi, ortiqcha qismi kesiladi) */
@@ -651,12 +647,10 @@
       if (frame.requestFullscreen)            { frame.requestFullscreen().catch(fakeOn); }
       else if (frame.webkitRequestFullscreen) { frame.webkitRequestFullscreen(); }
       else { fakeOn(); }                                                             // iPhone Safari
-      try { screen.orientation.lock('landscape'); } catch (e) {}
     };
     const exitFS = () => {
       if (realFS()) { (document.exitFullscreen || document.webkitExitFullscreen).call(document); }
       fakeOff();
-      try { screen.orientation.unlock(); } catch (e) {}
     };
     document.addEventListener('fullscreenchange', () => {
       const on = document.fullscreenElement === frame;
